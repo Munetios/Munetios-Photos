@@ -1,0 +1,3035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Munetios Photos</title>
+    <link rel="icon" href="image.png" type="image/x-icon">
+    <!-- More Favicons uses image.png same -->
+  <link rel="icon" type="image/png" sizes="32x32" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-192.png">
+
+    <meta name="apple-mobile-web-app-title" content="Munetios Photos">
+    <meta name="application-name" content="Munetios Photos">
+    <meta name="msapplication-TileImage" content="image.png">
+    <link rel="mask-icon" href="image.png" color="#ffffff">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="manifest" href="manifest.json">
+    <meta name="description" content="Munetios Photos - Discover, search, and manage your photo collection with a beautiful, modern interface.">
+    <meta name="keywords" content="photos, gallery, image, search, Munetios, photography, collection, albums">
+    <meta name="author" content="Munetios">
+    <meta property="og:title" content="Munetios Photos">
+    <meta property="og:description" content="Discover, search, and manage your photo collection with Munetios Photos.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://photos.munetios.com">
+    <meta property="og:image" content="https://photos.munetios.com/image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Munetios Photos">
+    <meta name="twitter:description" content="Discover, search, and manage your photo collection with Munetios Photos.">
+    <meta name="twitter:image" content="https://photos.munetios.com/image.png">
+    <link rel="canonical" href="https://photos.munetios.com">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; media-src 'self' blob:; style-src 'self' https://api.munetios.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src blob: 'self' data: blob: https://photos.munetios.com; connect-src 'self' https://api.munetios.com blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src https://www.munetios.com;">
+    <!-- Linking for beautiful ui -->
+    <link rel="stylesheet" href="https://api.munetios.com/beautiful-css/beautiful.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap">
+    <script src="jszip.min.js"></script>
+    <script>
+        // Service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js')
+                    .then(function(registration) {
+                        // Registration successful
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        // Registration failed
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+    <style>
+        .liquid-glass {
+            backdrop-filter: blur(3px) saturate(190%);
+        }
+        * {
+            font-family: 'Lexend', sans-serif;
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #1d0a30;
+            color: white;
+        }
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            top: 0;
+            position: sticky;
+            z-index: 1000;
+        }
+        .menu-btn {
+            cursor: pointer;
+            padding: 14px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .menu-btn:hover {
+            background-color: rgba(255, 255, 255, 0.205);
+        }
+        .top-left {
+            padding: 10px 15px;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+           max-width: 900px;
+           width: 100%;
+           margin: 0 auto;
+           margin-left: 20px;
+           margin-right: 20px;
+        }
+        .search-bar input {
+            flex: 1;
+            padding: 2px 4px;
+            border: none;
+            background-color: transparent;
+            color: white;
+            font-size: 1rem;
+            width: 100%;
+            outline: none;
+        }
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .top-right {
+            padding: 10px 15px;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 16px;
+        }
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+       padding: 10px 15px;
+       border: #ffffff31 1px solid;
+         background: rgba( 255, 255, 255, 0.1 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 3px ) saturate( 190% ) brightness( 0.9 );
+    -webkit-backdrop-filter: blur( 3px ) saturate( 190% );
+    border-radius: 50px;
+    color: white;
+        }
+
+        .btn:hover {
+            background-color: rgba(255, 255, 255, 0.205);
+        }
+        .create-label {
+            font-weight: 600;
+        }
+        .topbar-item {
+            cursor: pointer;
+            padding: 2px 3px;
+            display: flex;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+        }
+        .topbar-item:hover {
+            background-color: rgba(255, 255, 255, 0.205);
+        }
+        .sidebar {
+            width: 220px;
+            height: calc(100vh - 80px);
+            position: fixed;
+            top: 80px;
+            left: 15px;
+            padding-top: 60px;
+            display: flex;
+            box-sizing: border-box;
+            flex-direction: column;
+            overflow-y: auto;
+            bottom: 15px;
+            transition: width 0.3s cubic-bezier(.4,0,.2,1), background 0.25s cubic-bezier(.4,0,.2,1);
+            animation: sidebarFadeIn 0.5s cubic-bezier(.4,0,.2,1);
+            overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+            }
+            .sidebar::-webkit-scrollbar {
+                display: none; /* Chrome, Safari, Opera */
+        }
+        @keyframes sidebarFadeIn {
+            from { opacity: 0; transform: translateX(-30px);}
+            to { opacity: 1; transform: translateX(0);}
+        }
+        .sidebar-items {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .sidebar-item:hover {
+            background-color: rgba(255, 255, 255, 0.205);
+        }
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            padding: 20px;
+            border-radius: 10px;
+            width: 700px;
+            max-width: 90%;
+        }
+        #mobileSearchIcon {
+            display: none;
+        }
+        .mobile-footer {
+            display: none !important;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 8px 0 6px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            gap: 4px;
+            z-index: 1500;
+            /* No background, border, shadow here; .liquid-glass handles it */
+        }
+        .mobile-footer .mobile-item {
+            flex: 1 1 0;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2px 0 0 0;
+            font-size: 0.95rem;
+            cursor: pointer;
+            max-width: 60px;
+        }
+        .mobile-footer .mobile-item svg {
+            width: 26px;
+            height: 26px;
+        }
+        .mobile-footer .footer-label {
+            font-size: 0.78rem;
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            display: block;
+        }
+        @media (max-width: 460px) {
+            .mobile-footer {
+            display: flex !important;
+            }
+        }
+        @media (max-width: 1190px) {
+            .sidebar {
+                width: 60px;
+            }
+            .sidebar-item span {
+                display: none;
+            }
+            .sidebar-item {
+                justify-content: center;
+            }  
+            .content {
+                margin-left: 100px;
+            } 
+        }
+        @media (max-width: 900px) {
+            .search-bar {
+                margin-left: 2px;
+                margin-right: 2px;
+            }
+        }
+        @media (max-width: 800px) {
+            #mobileSearchIcon {
+                display: flex !important;
+            }
+            .search-bar {
+                display: none;
+            }
+            .top-left {
+                display: none;
+            }
+        }
+        @media (max-width: 460px) {
+            .sidebar {
+                display: none;
+            }
+            .content {
+                margin-left: 3px;
+                padding: 10px;
+            }
+            .create-label {
+                display: none;
+            }
+            .topbar {
+                padding: 10px 10px;
+            }
+            .topbar-right {
+                gap: 5px;
+            }
+            .mobile-footer {
+                display: flex !important;
+            }
+        }
+        @media (max-width: 354px) {
+            .menu-btn {
+                padding: 10px 12px;
+            }
+            .topbar-item.hide-354[title="Apps"] {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-left">
+            <div class="menu-btn liquid-glass">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </div>
+            <div class="top-left liquid-glass">
+                <div class="logo-text">
+                    Munetios Photos
+                </div>
+            </div>
+        </div>
+        <div class="search-bar liquid-glass">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="searchInput" placeholder="Search Photos">
+        </div>
+        <div class="topbar-right">
+            <button class="btn" id="mobileSearchIcon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+            <button class="btn" id="createBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <div class="create-label">Create</div>
+            </button>
+            <div class="create-wrapper" style="display: none;">
+                <div class="create-options">
+                    <div class="create-option">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        <div class="option-label">Upload Photos</div>
+                    </div>
+                    <div class="create-option">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder-plus"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg>
+                        <div class="option-label">New Album</div>
+                    </div>
+                    <div class="create-option">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        <div class="option-label">Take Photo</div>
+                    </div>
+                    <div class="create-option">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-video"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                        <div class="option-label">Upload Video</div>
+                    </div>
+                </div>
+            </div>
+        <div class="top-right liquid-glass">
+        <div class="topbar-item" title="Help">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-help-circle"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 1 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12" y2="17"></line></svg>
+        </div>
+        <div class="topbar-item" title="Settings">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09A1.65 1.65 0 0 0 9 3.09V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.09a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </div>
+        <div class="topbar-item hide-354" title="Apps">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        </div>
+        </div>
+    </div>
+    </header>
+    <aside class="sidebar liquid-glass">
+        <nav class="sidebar-items">
+            <div class="sidebar-item" data-page="photosContent" title="Photos">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-image"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <span>Photos</span>
+            </div>
+            <div class="sidebar-item" data-page="videosContent" title="My Videos">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-film"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+                <span>My Videos</span>
+            </div>
+            <div class="sidebar-item" data-page="albumsContent" title="Albums">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 1 4 16.5z"></path></svg>
+                <span>Albums</span>
+            </div>
+            <div class="sidebar-item" data-page="screenshotsContent" title="Screenshots / Recordings">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-monitor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line></svg>
+                <span>Screenshots</span>
+            </div>
+            <div class="sidebar-item" data-page="favoritesContent" title="Favorites">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <span>Favorites</span>
+            </div>
+            <div class="sidebar-item" data-page="trashContent" title="Trash">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                <span>Trash</span>
+            </div>
+        </nav>
+    </aside>
+    <div class="content" id="photosContent">
+        <h1>Photos</h1>
+        <div id="photosList">
+            <p>No photos available.</p>
+        </div>
+    </div>
+    <div class="content" id="videosContent" style="display: none;">
+        <h1>My Videos</h1>
+        <div id="videosList">
+            <p>No videos available.</p>
+        </div>
+    </div>
+    <div class="content" id="albumsContent" style="display: none;">
+        <h1>Albums</h1>
+        <div id="albumsList">
+            <p>No albums available.</p>
+        </div>
+    </div>
+    <div class="content" id="screenshotsContent" style="display: none;">
+        <h1>Screenshots / Recordings</h1>
+        <div id="screenshotsList">
+            <p>No screenshots or recordings available.</p>
+        </div>
+    </div>
+    <div class="content" id="favoritesContent" style="display: none;">
+        <h1>Favorites</h1>
+        <div id="favoritesList">
+            <p>No favorite photos available.</p>
+        </div>
+    </div>
+    <div class="content" id="trashContent" style="display: none;">
+        <h1>Trash</h1>
+        <div id="trashList">
+            <p>No photos in trash.</p>
+        </div>
+    </div>
+    <div class="mobile-footer liquid-glass">
+        <div class="mobile-item" data-page="photosContent" title="Photos">  
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-image"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <small class="footer-label">Photos</small>
+        </div>
+        <div class="mobile-item" data-page="videosContent" title="My Videos">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-film"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+            <small class="footer-label">Videos</small>
+        </div>
+        <div class="mobile-item" data-page="albumsContent" title="Albums">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 1 4 16.5z"></path></svg>
+            <small class="footer-label">Albums</small>
+        </div>
+        <div class="mobile-item" data-page="screenshotsContent" title="Screenshots / Recordings">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-monitor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line></svg>
+            <small class="footer-label">Screenshots</small>
+        </div>
+        <div class="mobile-item" data-page="favoritesContent" title="Favorites">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            <small class="footer-label">Favorites</small>
+        </div>
+        <div class="mobile-item" data-page="trashContent" title="Trash">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            <small class="footer-label">Trash</small>
+        </div>
+        <script>
+        // Mobile footer navigation
+        document.querySelectorAll('.mobile-footer .mobile-item').forEach(item => {
+            item.addEventListener('click', function() {
+            const page = item.getAttribute('data-page');
+            const hash = {
+                'photosContent': '#/photos',
+                'videosContent': '#/videos',
+                'albumsContent': '#/albums',
+                'screenshotsContent': '#/screenshots',
+                'favoritesContent': '#/favorites',
+                'trashContent': '#/trash'
+            }[page];
+            if (hash) window.location.hash = hash;
+            });
+        });
+        </script>
+    </div>
+    <div class="modal" id="createAlbum">
+        <div class="modal-content liquid-glass">
+            <h2>Create New Album</h2>
+            <input type="text" id="albumNameInput" placeholder="Album Name" style="width: 100%; padding: 10px; margin-top: 10px; margin-bottom: 20px; border: none; border-radius: 5px; background-color: #ffffff1a; color: white;">
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn" id="cancelCreateAlbum">Cancel</button>
+                <button class="btn" id="confirmCreateAlbum">Create</button>
+            </div>
+        </div>
+    </div>
+    <style>
+        .create-wrapper.liquid-glass {
+            position: absolute !important;
+            top: 60px !important;
+            right: 20px !important;
+            border-radius: 18px !important;
+            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.1) !important;
+            padding: 18px 0 !important;
+            z-index: 3000 !important;
+            min-width: 240px !important;
+            display: none;
+        }
+        .create-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0 16px;
+        }
+        .create-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+        .create-option:hover {
+            background: rgba(255,255,255,0.12);
+        }
+        .option-label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #fff;
+            letter-spacing: 0.01em;
+        }
+    </style>
+    <script>
+        // IndexedDB setup
+        const DB_NAME = 'munetios_photos';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'photos';
+        const ALBUM_STORE = 'albums';
+        let db;
+
+        // Open IndexedDB
+        function openDB() {
+            return new Promise((resolve, reject) => {
+            const req = indexedDB.open(DB_NAME, DB_VERSION);
+            req.onupgradeneeded = function(e) {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) {
+                db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                }
+                if (!db.objectStoreNames.contains(ALBUM_STORE)) {
+                db.createObjectStore(ALBUM_STORE, { keyPath: 'id', autoIncrement: true });
+                }
+            };
+            req.onsuccess = function(e) {
+                db = e.target.result;
+                resolve(db);
+            };
+            req.onerror = function(e) {
+                reject(e);
+            };
+            });
+        }
+
+        // Save photo to IndexedDB
+        async function savePhoto(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            const photo = {
+                name: file.name,
+                type: file.type,
+                data: new Uint8Array(arrayBuffer),
+                date: new Date().toISOString(),
+                favorite: false,
+                albums: []
+            };
+            const req = store.add(photo);
+            req.onsuccess = () => resolve();
+            req.onerror = e => reject(e);
+            });
+        }
+
+        // Toast utility
+        function showtoast(msg) {
+            let toast = document.getElementById('munetios-toast');
+            if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'munetios-toast';
+            toast.style.position = 'fixed';
+            toast.style.bottom = '32px';
+            toast.style.left = '50%';
+            toast.style.transform = 'translateX(-50%)';
+            toast.style.background = 'rgba(30,20,50,0.97)';
+            toast.style.color = '#fff';
+            toast.style.padding = '14px 28px';
+            toast.style.borderRadius = '18px';
+            toast.style.fontSize = '1.1rem';
+            toast.style.zIndex = '9999';
+            toast.style.boxShadow = '0 4px 16px 0 rgba(31,38,135,0.18)';
+            toast.style.display = 'none';
+            document.body.appendChild(toast);
+            }
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+            toast.style.display = 'none';
+            }, 2200);
+        }
+
+        // Slideshow state
+        let slideshowActive = false;
+        let slideshowIndex = 0;
+        let slideshowPhotos = [];
+        let slideshowTimer = null;
+
+        // Update photo (for favorite, etc)
+        async function updatePhoto(id, updates) {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            const getReq = store.get(id);
+            getReq.onsuccess = () => {
+                const photo = getReq.result;
+                if (!photo) return reject();
+                Object.assign(photo, updates);
+                const putReq = store.put(photo);
+                putReq.onsuccess = () => resolve();
+                putReq.onerror = e => reject(e);
+            };
+            getReq.onerror = e => reject(e);
+            });
+        }
+
+        // Move photo to trash (soft delete)
+        async function deletePhoto(id) {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            const getReq = store.get(id);
+            getReq.onsuccess = () => {
+                const photo = getReq.result;
+                if (!photo) return reject();
+                photo.trashed = true;
+                photo.trashedAt = new Date().toISOString();
+                const putReq = store.put(photo);
+                putReq.onsuccess = () => resolve();
+                putReq.onerror = e => reject(e);
+            };
+            getReq.onerror = e => reject(e);
+            });
+        }
+
+        // Permanently delete photo from DB with step-by-step confirmation modal
+        async function permanentlyDeletePhoto(id) {
+            // Show confirm modal with 5 warnings, next button for each
+            let modal = document.getElementById('permDeleteModal');
+            if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'permDeleteModal';
+            modal.className = 'modal';
+            document.body.appendChild(modal);
+            }
+
+            const warnings = [
+            "This action <b>cannot be undone</b>.",
+            "The photo will be <b>permanently erased</b> from your device.",
+            "You will <b>not be able to recover</b> this photo.",
+            "All albums and favorites for this photo will be lost.",
+            "This operation is <b>immediate and final</b>."
+            ];
+
+            let step = 0;
+
+            function renderStep() {
+            modal.innerHTML = `
+                <div class="modal-content liquid-glass" style="max-width:420px;">
+                <h2 style="color:#ff4d4d;">Permanently Delete Photo?</h2>
+                <ul style="color:#ffb3b3; font-size:1rem; margin-bottom:18px; padding-left:20px;">
+                    <li>${warnings[step]}</li>
+                </ul>
+                <div style="display:flex;justify-content:flex-end;gap:10px;">
+                    <button class="btn" id="permDeleteCancelBtn">Cancel</button>
+                    ${step < warnings.length - 1
+                    ? `<button class="btn" id="permDeleteNextBtn">Next</button>`
+                    : `<button class="btn" id="permDeleteConfirmBtn" style="background:#ff4d4d;border-color:#ff4d4d;">Delete Permanently</button>`
+                    }
+                </div>
+                </div>
+            `;
+            modal.style.display = 'flex';
+
+            modal.querySelector('#permDeleteCancelBtn').onclick = () => {
+                modal.style.display = 'none';
+                rejectPromise('User cancelled');
+            };
+            if (step < warnings.length - 1) {
+                modal.querySelector('#permDeleteNextBtn').onclick = () => {
+                step++;
+                renderStep();
+                };
+            } else {
+                modal.querySelector('#permDeleteConfirmBtn').onclick = async () => {
+                modal.style.display = 'none';
+                // Actually delete from DB
+                const db = await openDB();
+                const tx = db.transaction(STORE_NAME, 'readwrite');
+                const store = tx.objectStore(STORE_NAME);
+                const req = store.delete(id);
+                req.onsuccess = () => resolvePromise();
+                req.onerror = e => rejectPromise(e);
+                };
+            }
+            }
+
+            let resolvePromise, rejectPromise;
+            const promise = new Promise((resolve, reject) => {
+            resolvePromise = resolve;
+            rejectPromise = reject;
+            });
+
+            step = 0;
+            renderStep();
+
+            return promise;
+        }
+
+        // Restore photo from trash
+        async function restorePhoto(id) {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            const getReq = store.get(id);
+            getReq.onsuccess = () => {
+                const photo = getReq.result;
+                if (!photo) return reject();
+                delete photo.trashed;
+                delete photo.trashedAt;
+                const putReq = store.put(photo);
+                putReq.onsuccess = () => resolve();
+                putReq.onerror = e => reject(e);
+            };
+            getReq.onerror = e => reject(e);
+            });
+        }
+
+        // Album functions
+        async function getAlbums() {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+            const tx = db.transaction(ALBUM_STORE, 'readonly');
+            const store = tx.objectStore(ALBUM_STORE);
+            const req = store.getAll();
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = e => reject(e);
+            });
+        }
+
+        async function addAlbum(name) {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+            const tx = db.transaction(ALBUM_STORE, 'readwrite');
+            const store = tx.objectStore(ALBUM_STORE);
+            const album = {
+                name,
+                created: new Date().toISOString()
+            };
+            const req = store.add(album);
+            req.onsuccess = () => resolve();
+            req.onerror = e => reject(e);
+            });
+        }
+
+        // Add photo to album
+        async function addPhotoToAlbum(photoId, albumId) {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            const getReq = store.get(photoId);
+            getReq.onsuccess = () => {
+                const photo = getReq.result;
+                if (!photo) return reject();
+                if (!photo.albums) photo.albums = [];
+                if (!photo.albums.includes(albumId)) photo.albums.push(albumId);
+                const putReq = store.put(photo);
+                putReq.onsuccess = () => resolve();
+                putReq.onerror = e => reject(e);
+            };
+            getReq.onerror = e => reject(e);
+            });
+        }
+
+        // Get all photos
+        async function getAllPhotos() {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const req = store.getAll();
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = e => reject(e);
+            });
+        }
+
+        // Load and display photos from IndexedDB
+        async function loadPhotos() {
+            const db = await openDB();
+            const tx = db.transaction(STORE_NAME, 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const req = store.getAll();
+            req.onsuccess = async function() {
+            const photos = req.result;
+            const photosList = document.getElementById('photosList');
+            const favoritesList = document.getElementById('favoritesList');
+            const screenshotsList = document.getElementById('screenshotsList');
+            const trashList = document.getElementById('trashList');
+            photosList.innerHTML = '';
+            if (favoritesList) favoritesList.innerHTML = '';
+            if (screenshotsList) screenshotsList.innerHTML = '';
+            if (trashList) trashList.innerHTML = '';
+            // Separate trashed and non-trashed photos, and filter out videos
+            const nonTrashedPhotos = photos.filter(photo => !photo.trashed && !photo.isVideo);
+            const trashedPhotos = photos.filter(photo => photo.trashed && !photo.isVideo);
+            if (!nonTrashedPhotos.length) {
+                photosList.innerHTML = '<p>No photos available.</p>';
+                if (favoritesList) favoritesList.innerHTML = '<p>No favorite photos available.</p>';
+                if (screenshotsList) screenshotsList.innerHTML = '<p>No screenshots or recordings available.</p>';
+            } else {
+                let hasFavorites = false;
+                let hasScreenshots = false;
+                for (const photo of nonTrashedPhotos) {
+                    const blob = new Blob([photo.data], { type: photo.type });
+                    const url = URL.createObjectURL(blob);
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.alt = photo.name;
+                    img.style.maxWidth = '180px';
+                    img.style.maxHeight = '180px';
+                    img.style.margin = '10px';
+                    img.style.borderRadius = '12px';
+                    img.style.cursor = 'pointer';
+                    img.setAttribute('data-photo-id', photo.id);
+                    img.setAttribute('data-photo-name', photo.name);
+                    img.setAttribute('data-photo-type', photo.type);
+                    img.setAttribute('data-photo-date', photo.date);
+                    img.setAttribute('data-photo-size', photo.data.length);
+                    img.setAttribute('data-photo-favorite', photo.favorite ? '1' : '0');
+                    img.setAttribute('data-photo-screenshots', photo.screenshots ? '1' : '0');
+                    img.addEventListener('click', () => openPhotoViewer(photo.id));
+                    photosList.appendChild(img);
+        
+                    // Add to favorites if marked as favorite
+                    if (photo.favorite && favoritesList) {
+                        hasFavorites = true;
+                        const favImg = img.cloneNode();
+                        favImg.addEventListener('click', () => openPhotoViewer(photo.id));
+                        favoritesList.appendChild(favImg);
+                    }
+                    // Add to screenshots if marked
+                    if (photo.screenshots && screenshotsList) {
+                        hasScreenshots = true;
+                        const ssImg = img.cloneNode();
+                        ssImg.addEventListener('click', () => openPhotoViewer(photo.id));
+                        screenshotsList.appendChild(ssImg);
+                    }
+                }
+                if (favoritesList && !hasFavorites) {
+                    favoritesList.innerHTML = '<p>No favorite photos available.</p>';
+                }
+                if (screenshotsList && !hasScreenshots) {
+                    screenshotsList.innerHTML = '<p>No screenshots or recordings available.</p>';
+                }
+            }
+            // Render trashed photos in trashList
+            if (trashList) {
+                if (!trashedPhotos.length) {
+                    trashList.innerHTML = '<p>No photos in trash.</p>';
+                } else {
+                    trashList.innerHTML = '';
+                    for (const photo of trashedPhotos) {
+                        const blob = new Blob([photo.data], { type: photo.type });
+                        const url = URL.createObjectURL(blob);
+                        const img = document.createElement('img');
+                        img.src = url;
+                        img.alt = photo.name;
+                        img.style.maxWidth = '140px';
+                        img.style.maxHeight = '140px';
+                        img.style.margin = '10px';
+                        img.style.borderRadius = '10px';
+                        img.style.cursor = 'pointer';
+                        img.setAttribute('data-photo-id', photo.id);
+                        img.title = photo.name + ' (Trashed)';
+                        // Add click to open viewer or restore/delete
+                        const actionsDiv = document.createElement('div');
+                        actionsDiv.style.display = 'flex';
+                        actionsDiv.style.gap = '8px';
+                        actionsDiv.style.marginBottom = '10px';
+                        // Restore button
+                        const restoreBtn = document.createElement('button');
+                        restoreBtn.className = 'btn';
+                        restoreBtn.textContent = 'Restore';
+                        restoreBtn.onclick = async () => {
+                            await restorePhoto(photo.id);
+                            await loadPhotos();
+                            showtoast('Photo restored!');
+                        };
+                        // Permanently delete button
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'btn';
+                        deleteBtn.textContent = 'Delete Permanently';
+                        deleteBtn.onclick = async () => {
+                            await permanentlyDeletePhoto(photo.id);
+                            await loadPhotos();
+                            showtoast('Photo permanently deleted!');
+                        };
+                        actionsDiv.appendChild(restoreBtn);
+                        actionsDiv.appendChild(deleteBtn);
+                        const wrapper = document.createElement('div');
+                        wrapper.style.display = 'inline-block';
+                        wrapper.style.textAlign = 'center';
+                        wrapper.appendChild(img);
+                        wrapper.appendChild(actionsDiv);
+                        trashList.appendChild(wrapper);
+                    }
+                }
+            }
+            // For slideshow (only non-trashed photos)
+            slideshowPhotos = nonTrashedPhotos.map(p => p.id);
+            };
+        }
+
+        // Add hidden file input for photo upload
+        let fileInput = document.getElementById('photoUploadInput');
+        if (!fileInput) {
+            fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.style.display = 'none';
+            fileInput.id = 'photoUploadInput';
+            document.body.appendChild(fileInput);
+        }
+
+        // Handle Upload Photos click
+        document.querySelectorAll('.create-option').forEach(opt => {
+            if (opt.querySelector('.option-label')?.textContent.trim() === 'Upload Photos') {
+            opt.addEventListener('click', () => {
+                fileInput.value = '';
+                fileInput.click();
+                document.querySelector('.create-wrapper').style.display = 'none';
+            });
+            }
+        });
+
+        // Handle file selection
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+            await savePhoto(file);
+            await loadPhotos();
+            showtoast('Photo uploaded!');
+            }
+        });
+
+        // Album modal logic
+        const createAlbumModal = document.getElementById('createAlbum');
+        const albumNameInput = document.getElementById('albumNameInput');
+        document.getElementById('createBtn').addEventListener('click', () => {
+            // nothing, handled by create-wrapper
+        });
+        document.getElementById('cancelCreateAlbum').addEventListener('click', () => {
+            createAlbumModal.style.display = 'none';
+            albumNameInput.value = '';
+        });
+        document.getElementById('confirmCreateAlbum').addEventListener('click', async () => {
+            const name = albumNameInput.value.trim();
+            if (!name) {
+            showtoast('Album name required');
+            return;
+            }
+            await addAlbum(name);
+            createAlbumModal.style.display = 'none';
+            albumNameInput.value = '';
+            showtoast('Album created!');
+            await renderAlbumsList();
+        });
+
+        // Show create album modal on "New Album" click
+        document.querySelectorAll('.create-option').forEach(opt => {
+            if (opt.querySelector('.option-label')?.textContent.trim() === 'New Album') {
+            opt.addEventListener('click', () => {
+                createAlbumModal.style.display = 'flex';
+                albumNameInput.value = '';
+                document.querySelector('.create-wrapper').style.display = 'none';
+            });
+            }
+        });
+
+        // Render albums in albumsContent, with clickable albums to show photos
+        async function renderAlbumsList() {
+            const albumsList = document.getElementById('albumsList');
+            const albums = await getAlbums();
+            if (!albums.length) {
+                albumsList.innerHTML = '<p>No albums available.</p>';
+                return;
+            }
+            albumsList.innerHTML = '';
+            for (const album of albums) {
+                const btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.style.width = '100%';
+                btn.style.marginBottom = '10px';
+                btn.style.display = 'flex';
+                btn.style.alignItems = 'center';
+                btn.style.justifyContent = 'flex-start';
+                btn.style.gap = '12px';
+                btn.style.fontWeight = 'bold';
+                btn.style.fontSize = '1.1rem';
+                btn.style.background = 'rgba(255,255,255,0.06)';
+                btn.style.transition = 'background 0.18s';
+                btn.onmouseover = () => btn.style.background = 'rgba(255,255,255,0.13)';
+                btn.onmouseout = () => btn.style.background = 'rgba(255,255,255,0.06)';
+                btn.onclick = () => showAlbumPhotos(album);
+
+                // Add an icon for album
+                btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book" style="margin-right:8px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 1 4 16.5z"></path></svg>`;
+                const span = document.createElement('span');
+                span.textContent = album.name;
+                btn.appendChild(span);
+
+                albumsList.appendChild(btn);
+            }
+        }
+
+        // Show photos in an album
+        async function showAlbumPhotos(album) {
+            const albumsList = document.getElementById('albumsList');
+            albumsList.innerHTML = '';
+            // Header
+            const header = document.createElement('div');
+            header.style.display = 'flex';
+            header.style.alignItems = 'center';
+            header.style.marginBottom = '18px';
+            // Back button
+            const backBtn = document.createElement('button');
+            backBtn.className = 'btn';
+            backBtn.innerHTML = '<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Back';
+            backBtn.onclick = renderAlbumsList;
+            header.appendChild(backBtn);
+            // Album name
+            const title = document.createElement('span');
+            title.textContent = album.name;
+            title.style.fontWeight = 'bold';
+            title.style.fontSize = '1.2rem';
+            title.style.marginLeft = '18px';
+            header.appendChild(title);
+            albumsList.appendChild(header);
+
+            // Photos grid
+            const grid = document.createElement('div');
+            grid.style.display = 'flex';
+            grid.style.flexWrap = 'wrap';
+            grid.style.gap = '12px';
+            grid.style.marginTop = '10px';
+
+            const allPhotos = await getAllPhotos();
+            const albumPhotos = allPhotos.filter(photo => Array.isArray(photo.albums) && photo.albums.includes(album.id));
+            if (!albumPhotos.length) {
+            const p = document.createElement('p');
+            p.textContent = 'No photos in this album.';
+            p.style.color = '#aaa';
+            grid.appendChild(p);
+            } else {
+            for (const photo of albumPhotos) {
+                const blob = new Blob([photo.data], { type: photo.type });
+                const url = URL.createObjectURL(blob);
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = photo.name;
+                img.style.maxWidth = '160px';
+                img.style.maxHeight = '160px';
+                img.style.borderRadius = '10px';
+                img.style.cursor = 'pointer';
+                img.style.background = '#222';
+                img.title = photo.name;
+                img.onclick = () => openPhotoViewer(photo.id);
+                grid.appendChild(img);
+            }
+            }
+            albumsList.appendChild(grid);
+        }
+
+        // Render albums on load
+        window.addEventListener('DOMContentLoaded', renderAlbumsList);
+
+        // Photo Viewer Overlay
+        function createPhotoViewerOverlay() {
+            if (document.getElementById('photoViewerOverlay')) return;
+            const overlay = document.createElement('div');
+            overlay.id = 'photoViewerOverlay';
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100vw';
+            overlay.style.height = '100vh';
+            overlay.style.background = 'rgba(0,0,0,0.85)';
+            overlay.style.display = 'none';
+            overlay.style.alignItems = 'center';
+            overlay.style.justifyContent = 'center';
+            overlay.style.zIndex = '4000';
+            overlay.innerHTML = `
+            <div class="liquid-glass" style="position:relative; max-width:100vw; max-height:100vh; border-radius:18px; box-shadow:0 8px 32px 0 rgba(31,38,135,0.2); padding:0; display:flex; flex-direction:column; width:100vw; height:100vh;">
+            <div id="photoViewerToolbar" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:10px; padding:12px 18px 0 18px;">
+            <button class="btn" id="photoViewerShare" title="Share"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+            <button class="btn" id="photoViewerEdit" title="Edit"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"/></svg></button>
+            <button class="btn" id="photoViewerInfo" title="Info"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="8"/></svg></button>
+            <button class="btn" id="photoViewerFavorite" title="Favorite"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>
+            <button class="btn" id="photoViewerDelete" title="Delete"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></button>
+            <div style="position:relative;">
+            <button class="btn" id="photoViewerMore" title="More"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+            <div id="photoViewerMoreMenu" style="display:none; position:absolute; right:0; top:36px; background:rgba(30,20,50,0.97); border-radius:12px; box-shadow:0 4px 16px 0 rgba(31,38,135,0.18); min-width:180px; z-index:10;">
+            <div class="create-option" id="photoViewerSlideshow">Slideshow</div>
+            <div class="create-option" id="photoViewerDownload">Download</div>
+            <div class="create-option" id="photoViewerRotateLeft">Rotate Left</div>
+            <div class="create-option" id="photoViewerAddToAlbum">Add to Album</div>
+            <div class="create-option" id="photoViewerAddToScreenshots">Add to Screenshots</div>
+            <div class="create-option" id="photoViewerPrint">Print</div>
+            </div>
+            </div>
+            <button class="btn" id="photoViewerClose" title="Close" style="margin-left:10px;"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+            <div style="flex:1; display:flex; align-items:center; justify-content:center; min-height:0; min-width:0;">
+            <img id="photoViewerImg" src="" alt="" style="max-width:100vw; max-height:100vh; width:100%; height:100%; object-fit:contain; border-radius:12px; box-shadow:0 2px 12px 0 rgba(0,0,0,0.18); background:#222;"/>
+            </div>
+            <div id="photoViewerInfoPanel" style="display:none; padding:18px; color:#fff; font-size:1rem;">
+            <div><b>Name:</b> <span id="photoViewerInfoName"></span></div>
+            <div><b>Date:</b> <span id="photoViewerInfoDate"></span></div>
+            <div><b>Type:</b> <span id="photoViewerInfoType"></span></div>
+            <div><b>Size:</b> <span id="photoViewerInfoSize"></span></div>
+            </div>
+            <div id="photoViewerSlideshowBar" class="liquid-glass" style="display:none; position:absolute; bottom:24px; left:50%; transform:translateX(-50%); min-width:320px; max-width:90vw; padding:10px 24px; border-radius:18px; box-shadow:0 8px 32px 0 rgba(31,38,135,0.18); display:flex; align-items:center; justify-content:space-between; gap:18px;">
+            <button class="btn" id="slideshowPrev" title="Back"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <button class="btn" id="slideshowPlayPause" title="Play"><svg id="slideshowPlayIcon" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></button>
+            <button class="btn" id="slideshowNext" title="Forward"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <span id="slideshowTimestamp" style="margin-left:auto; font-size:1rem; color:#fff; opacity:0.8;"></span>
+            </div>
+            <!-- Album select menu -->
+            <div id="photoViewerAlbumMenu" style="display:none; position:absolute; right:0; top:60px; background:rgba(30,20,50,0.97); border-radius:12px; box-shadow:0 4px 16px 0 rgba(31,38,135,0.18); min-width:220px; z-index:20; padding:10px;">
+            <div style="font-weight:bold; margin-bottom:8px; color:#fff;">Add to Album</div>
+            <div id="albumListMenu"></div>
+            <div style="margin-top:10px;">
+            <button class="btn" id="albumMenuCloseBtn" style="width:100%;">Close</button>
+            </div>
+            </div>
+            </div>
+            `;
+            document.body.appendChild(overlay);
+
+            // Toolbar events
+            overlay.querySelector('#photoViewerClose').onclick = () => {
+            overlay.style.display = 'none';
+            stopSlideshow();
+            overlay.querySelector('#photoViewerAlbumMenu').style.display = 'none';
+            };
+            overlay.addEventListener('click', e => {
+            if (e.target === overlay) {
+                overlay.style.display = 'none';
+                stopSlideshow();
+                overlay.querySelector('#photoViewerAlbumMenu').style.display = 'none';
+            }
+            });
+            overlay.querySelector('#photoViewerInfo').onclick = () => {
+            const infoPanel = overlay.querySelector('#photoViewerInfoPanel');
+            infoPanel.style.display = infoPanel.style.display === 'none' ? 'block' : 'none';
+            };
+            overlay.querySelector('#photoViewerEdit').onclick = () => {
+            showtoast('Edit: Coming soon');
+            };
+            overlay.querySelector('#photoViewerFavorite').onclick = async () => {
+            if (!overlay._photoId) return;
+            await updatePhoto(overlay._photoId, { favorite: !overlay._photoFavorite });
+            overlay._photoFavorite = !overlay._photoFavorite;
+            overlay.querySelector('#photoViewerFavorite').style.color = overlay._photoFavorite ? '#ffd700' : '';
+            await loadPhotos();
+            showtoast(overlay._photoFavorite ? 'Added to favorites' : 'Removed from favorites');
+            };
+            overlay.querySelector('#photoViewerDelete').onclick = async () => {
+            if (!overlay._photoId) return;
+            showtoast('Photo deleted');
+            await deletePhoto(overlay._photoId);
+            overlay.style.display = 'none';
+            stopSlideshow();
+            await loadPhotos();
+            };
+            overlay.querySelector('#photoViewerShare').onclick = async () => {
+            if (!navigator.share) {
+                showtoast('Web Share API not supported.');
+                return;
+            }
+            const img = overlay.querySelector('#photoViewerImg');
+            const name = overlay._photoName;
+            const type = overlay._photoType;
+            const res = await fetch(img.src);
+            const blob = await res.blob();
+            const file = new File([blob], name, { type });
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: name,
+                        text: 'Shared from Munetios Photos'
+                    });
+                    showtoast('Photo shared!');
+                } catch (e) {
+                    showtoast('Share cancelled');
+                }
+            } else {
+                showtoast('Sharing files is not supported on this device/browser.');
+            }
+            };
+            // More menu
+            const moreBtn = overlay.querySelector('#photoViewerMore');
+            const moreMenu = overlay.querySelector('#photoViewerMoreMenu');
+            moreBtn.onclick = (e) => {
+            e.stopPropagation();
+            moreMenu.style.display = moreMenu.style.display === 'none' ? 'block' : 'none';
+            overlay.querySelector('#photoViewerAlbumMenu').style.display = 'none';
+            };
+            document.addEventListener('click', (e) => {
+            if (!moreMenu.contains(e.target) && e.target !== moreBtn) {
+                moreMenu.style.display = 'none';
+            }
+            });
+            overlay.querySelector('#photoViewerDownload').onclick = () => {
+            const img = overlay.querySelector('#photoViewerImg');
+            const a = document.createElement('a');
+            a.href = img.src;
+            a.download = overlay._photoName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            moreMenu.style.display = 'none';
+            showtoast('Photo downloaded');
+            };
+            overlay.querySelector('#photoViewerRotateLeft').onclick = () => {
+            const img = overlay.querySelector('#photoViewerImg');
+            let rot = img.getAttribute('data-rot') || 0;
+            rot = (parseInt(rot) - 90) % 360;
+            img.style.transform = `rotate(${rot}deg)`;
+            img.setAttribute('data-rot', rot);
+            moreMenu.style.display = 'none';
+            showtoast('Rotated left');
+            };
+            // Add to Album
+            overlay.querySelector('#photoViewerAddToAlbum').onclick = async () => {
+            moreMenu.style.display = 'none';
+            const albumMenu = overlay.querySelector('#photoViewerAlbumMenu');
+            const albumListMenu = overlay.querySelector('#albumListMenu');
+            albumListMenu.innerHTML = '<div style="color:#aaa;">Loading...</div>';
+            albumMenu.style.display = 'block';
+            // Position album menu under "More"
+            albumMenu.style.right = '0';
+            albumMenu.style.top = '60px';
+            // Load albums
+            const albums = await getAlbums();
+            albumListMenu.innerHTML = '';
+            if (!albums.length) {
+                albumListMenu.innerHTML = '<div style="color:#aaa;">No albums. Create one first.</div>';
+            } else {
+                for (const album of albums) {
+                const btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.style.width = '100%';
+                btn.style.marginBottom = '6px';
+                btn.textContent = album.name;
+                btn.onclick = async () => {
+                    await addPhotoToAlbum(overlay._photoId, album.id);
+                    albumMenu.style.display = 'none';
+                    showtoast('Added to album "' + album.name + '"');
+                };
+                albumListMenu.appendChild(btn);
+                }
+            }
+            };
+            overlay.querySelector('#albumMenuCloseBtn').onclick = () => {
+            overlay.querySelector('#photoViewerAlbumMenu').style.display = 'none';
+            };
+            overlay.querySelector('#photoViewerAddToScreenshots').onclick = async () => {
+            if (!overlay._photoId) return;
+            await updatePhoto(overlay._photoId, { screenshots: true });
+            await loadPhotos();
+            showtoast('Added to Screenshots!');
+            moreMenu.style.display = 'none';
+            };
+            overlay.querySelector('#photoViewerPrint').onclick = () => {
+            const img = overlay.querySelector('#photoViewerImg');
+            const win = window.open('', '_blank');
+            win.document.write('<html><head><title>Print Photo</title></head><body style="margin:0;background:#222;display:flex;align-items:center;justify-content:center;height:100vh;"><img src="' + img.src + '" style="max-width:100vw;max-height:100vh;"/></body></html>');
+            win.document.close();
+            win.focus();
+            win.print();
+            setTimeout(() => win.close(), 500);
+            moreMenu.style.display = 'none';
+            showtoast('Print dialog opened');
+            };
+            // Slideshow
+            overlay.querySelector('#photoViewerSlideshow').onclick = () => {
+            moreMenu.style.display = 'none';
+            startSlideshow(overlay._photoId);
+            };
+            // Slideshow controls
+            overlay.querySelector('#slideshowPrev').onclick = () => {
+            if (slideshowActive) slideshowShow(slideshowIndex - 1);
+            };
+            overlay.querySelector('#slideshowNext').onclick = () => {
+            if (slideshowActive) slideshowShow(slideshowIndex + 1);
+            };
+            overlay.querySelector('#slideshowPlayPause').onclick = () => {
+            if (!slideshowActive) return;
+            if (slideshowTimer) {
+                stopSlideshowTimer();
+            } else {
+                startSlideshowTimer();
+            }
+            };
+        }
+        createPhotoViewerOverlay();
+
+        // Open photo viewer
+        async function openPhotoViewer(photoId) {
+            stopSlideshow();
+            const db = await openDB();
+            const tx = db.transaction(STORE_NAME, 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const req = store.get(photoId);
+            req.onsuccess = async function() {
+            const photo = req.result;
+            if (!photo) return;
+            const blob = new Blob([photo.data], { type: photo.type });
+            const url = URL.createObjectURL(blob);
+            const overlay = document.getElementById('photoViewerOverlay');
+            overlay.querySelector('#photoViewerImg').src = url;
+            overlay.querySelector('#photoViewerImg').alt = photo.name;
+            overlay.querySelector('#photoViewerImg').style.transform = '';
+            overlay.querySelector('#photoViewerImg').setAttribute('data-rot', 0);
+            overlay.querySelector('#photoViewerInfoPanel').style.display = 'none';
+            overlay.querySelector('#photoViewerInfoName').textContent = photo.name;
+            overlay.querySelector('#photoViewerInfoDate').textContent = new Date(photo.date).toLocaleString();
+            overlay.querySelector('#photoViewerInfoType').textContent = photo.type;
+            overlay.querySelector('#photoViewerInfoSize').textContent = (photo.data.length/1024).toFixed(1) + ' KB';
+            overlay._photoId = photo.id;
+            overlay._photoName = photo.name;
+            overlay._photoType = photo.type;
+            overlay._photoFavorite = !!photo.favorite;
+            overlay.style.display = 'flex';
+            overlay.querySelector('#photoViewerFavorite').style.color = photo.favorite ? '#ffd700' : '';
+            overlay.querySelector('#photoViewerSlideshowBar').style.display = 'none';
+            overlay.querySelector('#photoViewerAlbumMenu').style.display = 'none';
+            };
+        }
+
+        // Slideshow logic
+        async function startSlideshow(photoId) {
+            const overlay = document.getElementById('photoViewerOverlay');
+            slideshowActive = true;
+            slideshowIndex = slideshowPhotos.indexOf(photoId);
+            if (slideshowIndex === -1) slideshowIndex = 0;
+            overlay.querySelector('#photoViewerSlideshowBar').style.display = 'flex';
+            slideshowShow(slideshowIndex);
+            startSlideshowTimer();
+        }
+        async function slideshowShow(idx) {
+            if (!slideshowPhotos.length) return;
+            slideshowIndex = (idx + slideshowPhotos.length) % slideshowPhotos.length;
+            const photoId = slideshowPhotos[slideshowIndex];
+            const db = await openDB();
+            const tx = db.transaction(STORE_NAME, 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const req = store.get(photoId);
+            req.onsuccess = async function() {
+            const photo = req.result;
+            if (!photo) return;
+            const blob = new Blob([photo.data], { type: photo.type });
+            const url = URL.createObjectURL(blob);
+            const overlay = document.getElementById('photoViewerOverlay');
+            overlay.querySelector('#photoViewerImg').src = url;
+            overlay.querySelector('#photoViewerImg').alt = photo.name;
+            overlay.querySelector('#photoViewerImg').style.transform = '';
+            overlay.querySelector('#photoViewerImg').setAttribute('data-rot', 0);
+            overlay.querySelector('#photoViewerInfoPanel').style.display = 'none';
+            overlay.querySelector('#photoViewerInfoName').textContent = photo.name;
+            overlay.querySelector('#photoViewerInfoDate').textContent = new Date(photo.date).toLocaleString();
+            overlay.querySelector('#photoViewerInfoType').textContent = photo.type;
+            overlay.querySelector('#photoViewerInfoSize').textContent = (photo.data.length/1024).toFixed(1) + ' KB';
+            overlay._photoId = photo.id;
+            overlay._photoName = photo.name;
+            overlay._photoType = photo.type;
+            overlay._photoFavorite = !!photo.favorite;
+            overlay.style.display = 'flex';
+            overlay.querySelector('#photoViewerFavorite').style.color = photo.favorite ? '#ffd700' : '';
+            overlay.querySelector('#slideshowTimestamp').textContent = (slideshowIndex+1) + ' / ' + slideshowPhotos.length;
+            overlay.querySelector('#photoViewerAlbumMenu').style.display = 'none';
+            };
+        }
+        function startSlideshowTimer() {
+            const overlay = document.getElementById('photoViewerOverlay');
+            const playIcon = overlay.querySelector('#slideshowPlayIcon');
+            playIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>'; // Pause icon
+            if (slideshowTimer) clearInterval(slideshowTimer);
+            slideshowTimer = setInterval(() => {
+            slideshowShow(slideshowIndex + 1);
+            }, 2500);
+        }
+        function stopSlideshowTimer() {
+            const overlay = document.getElementById('photoViewerOverlay');
+            const playIcon = overlay.querySelector('#slideshowPlayIcon');
+            playIcon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>'; // Play icon
+            if (slideshowTimer) clearInterval(slideshowTimer);
+            slideshowTimer = null;
+        }
+        function stopSlideshow() {
+            slideshowActive = false;
+            stopSlideshowTimer();
+            const overlay = document.getElementById('photoViewerOverlay');
+            if (overlay) overlay.querySelector('#photoViewerSlideshowBar').style.display = 'none';
+        }
+
+        // Load photos on page load
+        window.addEventListener('DOMContentLoaded', loadPhotos);
+        const createBtn = document.querySelector('.btn .create-label') ? document.querySelector('.btn .create-label').parentElement : document.getElementById('createBtn');
+        const createWrapper = document.querySelector('.create-wrapper');
+
+        // Use .liquid-glass class for styling
+        createWrapper.classList.add('liquid-glass');
+        createWrapper.style.position = 'absolute';
+        createWrapper.style.top = '60px';
+        createWrapper.style.right = '20px';
+        createWrapper.style.borderRadius = '18px';
+        createWrapper.style.boxShadow = '0 8px 32px 0 rgba(31,38,135,0.1)';
+        createWrapper.style.padding = '18px 0';
+        createWrapper.style.zIndex = '3000';
+        createWrapper.style.minWidth = '220px';
+        createWrapper.style.display = 'none';
+
+        // Show/hide create-wrapper on button click
+        createBtn.addEventListener('click', (e) => {    
+            e.stopPropagation();
+            createWrapper.style.display = createWrapper.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Hide create-wrapper when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!createWrapper.contains(e.target) && !createBtn.contains(e.target)) {
+            createWrapper.style.display = 'none';
+            }
+        });
+    
+    const sidebarItems = document.querySelectorAll('.sidebar-item');
+        const contentSections = document.querySelectorAll('.content');
+
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const targetPage = item.getAttribute('data-page');
+
+                contentSections.forEach(section => {
+                    if (section.id === targetPage) {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+            });
+        });
+        // Check Service Worker activation
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(reg => {
+        if (reg.active && reg.active.state === 'activated') {
+            // Service worker is safely controlling the page
+            console.log('Munetios Photos: SW active and secure.');
+        }
+    });
+}
+/* --- Take Photo & Screen Record Modal --- */
+
+// Create Take Photo modal if not exists
+function createTakePhotoModal() {
+    if (document.getElementById('takePhotoModal')) return;
+    const modal = document.createElement('div');
+    modal.id = 'takePhotoModal';
+    modal.className = 'modal';
+    modal.style.display = 'none';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.zIndex = '5000';
+    modal.innerHTML = `
+        <div style="width:100vw;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;background:#1d0a30;">
+            <video id="cameraVideo" autoplay playsinline style="width:100vw;height:100vh;object-fit:cover;position:absolute;top:0;left:0;z-index:1;background:#000;"></video>
+            <canvas id="cameraCanvas" style="display:none;position:absolute;top:0;left:0;width:100vw;height:100vh;z-index:2;"></canvas>
+            <div id="takePhotoOverlay" style="position:absolute;bottom:0;left:0;width:100vw;padding:0 0 32px 0;z-index:3;display:flex;flex-direction:column;align-items:center;">
+                <div style="display:flex;justify-content:center;align-items:center;gap:18px;margin-bottom:18px;">
+                    <select id="cameraQuality" class="btn" style="font-size:1rem;">
+                        <option value="480">480p</option>
+                        <option value="720" selected>720p</option>
+                        <option value="1080">1080p</option>
+                        <option value="2160">4K</option>
+                    </select>
+                    <select id="cameraEffect" class="btn" style="font-size:1rem;">
+                        <option value="none">No Effect</option>
+                        <option value="grayscale(1)">Grayscale</option>
+                        <option value="sepia(1)">Sepia</option>
+                        <option value="invert(1)">Invert</option>
+                        <option value="contrast(2)">High Contrast</option>
+                        <option value="blur(3px)">Blur</option>
+                    </select>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:40px;">
+                    <button id="screenRecordBtn" class="btn" title="Screen Record" style="background:#222;border-color:#fff;">
+                        <svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" fill="#ff4444" stroke="#fff" stroke-width="2.5"/></svg>
+                    </button>
+                    <button id="cameraRecordBtn" class="btn" title="Camera Record" style="background:#222;border-color:#fff;">
+                        <svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="#ff4444" stroke="#fff" stroke-width="2.5"/></svg>
+                    </button>
+                    <button id="takePhotoBtn" class="btn" title="Take Photo" style="background:transparent;border:none;box-shadow:none;">
+                        <span style="display:inline-block;width:70px;height:70px;border-radius:50%;background:#fff;border:6px solid #eee;box-shadow:0 0 0 2px #fff;"></span>
+                    </button>
+                    <button id="closeTakePhotoBtn" class="btn" title="Close" style="background:#222;border-color:#fff;">
+                        <svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+                <div id="screenRecordStatus" style="margin-top:16px;color:#fff;font-size:1.1rem;display:none;"></div>
+                <div id="cameraRecordStatus" style="margin-top:16px;color:#fff;font-size:1.1rem;display:none;"></div>
+                <div id="takePhotoActions" style="margin-top:18px;display:none;flex-direction:row;gap:16px;justify-content:center;">
+                    <button class="btn" id="savePhotoBtn">Save to Photos</button>
+                    <button class="btn" id="saveScreenshotBtn">Save to Screenshots</button>
+                    <button class="btn" id="discardPhotoBtn">Discard</button>
+                </div>
+                <div id="screenRecordActions" style="margin-top:18px;display:none;flex-direction:row;gap:16px;justify-content:center;">
+                    <button class="btn" id="saveScreenVideoBtn">Save to My Videos</button>
+                    <button class="btn" id="saveScreenShotBtn">Save to Screenshots</button>
+                    <button class="btn" id="discardScreenVideoBtn">Discard</button>
+                </div>
+                <div id="cameraRecordActions" style="margin-top:18px;display:none;flex-direction:row;gap:16px;justify-content:center;">
+                    <button class="btn" id="saveCameraVideoBtn">Save to My Videos</button>
+                    <button class="btn" id="saveCameraShotBtn">Save to Screenshots</button>
+                    <button class="btn" id="discardCameraVideoBtn">Discard</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+createTakePhotoModal();
+
+// Open Take Photo modal on "Take Photo" click
+document.querySelectorAll('.create-option').forEach(opt => {
+    if (opt.querySelector('.option-label')?.textContent.trim() === 'Take Photo') {
+        opt.addEventListener('click', () => {
+            openTakePhotoModal();
+            document.querySelector('.create-wrapper').style.display = 'none';
+        });
+    }
+});
+
+let cameraStream = null;
+let mediaRecorder = null;
+let recordedChunks = [];
+let screenStream = null;
+let cameraMediaRecorder = null;
+let cameraRecordedChunks = [];
+
+// Open Take Photo Modal
+async function openTakePhotoModal() {
+    const modal = document.getElementById('takePhotoModal');
+    modal.style.display = 'flex';
+    // Set default UI
+    modal.querySelector('#cameraCanvas').style.display = 'none';
+    modal.querySelector('#cameraVideo').style.display = 'block';
+    modal.querySelector('#takePhotoActions').style.display = 'none';
+    modal.querySelector('#screenRecordActions').style.display = 'none';
+    modal.querySelector('#cameraRecordActions').style.display = 'none';
+    modal.querySelector('#screenRecordStatus').style.display = 'none';
+    modal.querySelector('#cameraRecordStatus').style.display = 'none';
+
+    // Try camera first, fallback to screen record if denied
+    try {
+        await startCamera();
+    } catch (e) {
+        // Camera denied, try screen record
+        showtoast('Camera denied, trying screen record...');
+        try {
+            await startScreenRecordFallback();
+        } catch (err) {
+            showtoast('Screen share denied. Exiting.');
+            closeTakePhotoModal();
+        }
+    }
+}
+
+// Fallback: start screen record if camera denied
+async function startScreenRecordFallback() {
+    // Prompt for screen share
+    screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+    const video = document.getElementById('cameraVideo');
+    video.srcObject = screenStream;
+    video.style.filter = document.getElementById('cameraEffect').value;
+    // Hide camera record and take photo buttons, only allow screen record
+    document.getElementById('cameraRecordBtn').style.display = 'none';
+    document.getElementById('takePhotoBtn').style.display = 'none';
+    document.getElementById('screenRecordBtn').style.display = '';
+}
+
+// Close Take Photo Modal
+document.getElementById('closeTakePhotoBtn').onclick = closeTakePhotoModal;
+function closeTakePhotoModal() {
+    const modal = document.getElementById('takePhotoModal');
+    modal.style.display = 'none';
+    stopCamera();
+    stopScreenRecord(true);
+    stopCameraRecord(true);
+    // Reset UI
+    document.getElementById('cameraRecordBtn').style.display = '';
+    document.getElementById('takePhotoBtn').style.display = '';
+    document.getElementById('screenRecordBtn').style.display = '';
+}
+
+// Camera quality change
+document.getElementById('cameraQuality').onchange = async function() {
+    await startCamera();
+};
+
+// Camera effect change
+document.getElementById('cameraEffect').onchange = function() {
+    const effect = this.value;
+    document.getElementById('cameraVideo').style.filter = effect;
+    document.getElementById('cameraCanvas').style.filter = effect;
+};
+
+// Start camera with selected quality
+async function startCamera() {
+    stopCamera();
+    const quality = document.getElementById('cameraQuality').value;
+    let width = 1280, height = 720;
+    if (quality === '480') { width = 640; height = 480; }
+    else if (quality === '720') { width = 1280; height = 720; }
+    else if (quality === '1080') { width = 1920; height = 1080; }
+    else if (quality === '2160') { width = 3840; height = 2160; }
+    // Try camera+mic
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+        video: { width, height },
+        audio: true
+    });
+    const video = document.getElementById('cameraVideo');
+    video.srcObject = cameraStream;
+    video.style.filter = document.getElementById('cameraEffect').value;
+    // Show all controls
+    document.getElementById('cameraRecordBtn').style.display = '';
+    document.getElementById('takePhotoBtn').style.display = '';
+    document.getElementById('screenRecordBtn').style.display = '';
+}
+function stopCamera() {
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(t => t.stop());
+        cameraStream = null;
+    }
+    document.getElementById('cameraVideo').srcObject = null;
+}
+
+// Take Photo
+document.getElementById('takePhotoBtn').onclick = function() {
+    const video = document.getElementById('cameraVideo');
+    const canvas = document.getElementById('cameraCanvas');
+    const effect = document.getElementById('cameraEffect').value;
+    // Set canvas size to video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.style.display = 'block';
+    video.style.display = 'none';
+    // Draw frame
+    const ctx = canvas.getContext('2d');
+    ctx.filter = effect;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // Show actions
+    document.getElementById('takePhotoActions').style.display = 'flex';
+    document.getElementById('screenRecordActions').style.display = 'none';
+    document.getElementById('cameraRecordActions').style.display = 'none';
+};
+
+// Save photo to Photos
+document.getElementById('savePhotoBtn').onclick = async function() {
+    const canvas = document.getElementById('cameraCanvas');
+    canvas.toBlob(async (blob) => {
+        const file = new File([blob], 'photo_' + Date.now() + '.png', { type: 'image/png' });
+        await savePhoto(file);
+        await loadPhotos();
+        showtoast('Photo saved!');
+        closeTakePhotoModal();
+    }, 'image/png');
+};
+// Save photo to Screenshots
+document.getElementById('saveScreenshotBtn').onclick = async function() {
+    const canvas = document.getElementById('cameraCanvas');
+    canvas.toBlob(async (blob) => {
+        const file = new File([blob], 'screenshot_' + Date.now() + '.png', { type: 'image/png' });
+        await savePhoto(file);
+        // Mark as screenshot
+        const db = await openDB();
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.openCursor(null, 'prev');
+        req.onsuccess = function(e) {
+            const cursor = e.target.result;
+            if (cursor) {
+                const photo = cursor.value;
+                photo.screenshots = true;
+                store.put(photo);
+            }
+        };
+        await loadPhotos();
+        showtoast('Saved to Screenshots!');
+        closeTakePhotoModal();
+    }, 'image/png');
+};
+// Discard photo
+document.getElementById('discardPhotoBtn').onclick = function() {
+    document.getElementById('cameraCanvas').style.display = 'none';
+    document.getElementById('cameraVideo').style.display = 'block';
+    document.getElementById('takePhotoActions').style.display = 'none';
+};
+
+// --- Screen Record ---
+document.getElementById('screenRecordBtn').onclick = async function() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        stopScreenRecord();
+        return;
+    }
+    try {
+        screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+        mediaRecorder = new MediaRecorder(screenStream, { mimeType: 'video/webm; codecs=vp9' });
+        recordedChunks = [];
+        mediaRecorder.ondataavailable = e => {
+            if (e.data.size > 0) recordedChunks.push(e.data);
+        };
+        mediaRecorder.onstop = () => {
+            document.getElementById('screenRecordActions').style.display = 'flex';
+            document.getElementById('screenRecordStatus').style.display = 'none';
+        };
+        mediaRecorder.start();
+        document.getElementById('screenRecordStatus').textContent = 'Recording... Click red button again to stop.';
+        document.getElementById('screenRecordStatus').style.display = 'block';
+        document.getElementById('screenRecordActions').style.display = 'none';
+        // Change icon to stop
+        document.getElementById('screenRecordBtn').innerHTML = '<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2" fill="#ff4444" stroke="#fff" stroke-width="2.5"/></svg>';
+        // Stop on stream end
+        screenStream.getVideoTracks()[0].onended = () => stopScreenRecord();
+    } catch (e) {
+        showtoast('Screen record denied');
+        closeTakePhotoModal();
+    }
+};
+function stopScreenRecord(forceDiscard) {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+    }
+    if (screenStream) {
+        screenStream.getTracks().forEach(t => t.stop());
+        screenStream = null;
+    }
+    document.getElementById('screenRecordBtn').innerHTML = '<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" fill="#ff4444" stroke="#fff" stroke-width="2.5"/></svg>';
+    if (forceDiscard) {
+        recordedChunks = [];
+        document.getElementById('screenRecordActions').style.display = 'none';
+        document.getElementById('screenRecordStatus').style.display = 'none';
+    }
+}
+
+// Save screen video to My Videos
+document.getElementById('saveScreenVideoBtn').onclick = async function() {
+    if (!recordedChunks.length) return;
+    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+    const file = new File([blob], 'screen_record_' + Date.now() + '.webm', { type: 'video/webm' });
+    await saveVideo(file);
+    await loadVideos();
+    showtoast('Screen recording saved to My Videos!');
+    closeTakePhotoModal();
+};
+// Save screen video to Screenshots/Recordings
+document.getElementById('saveScreenShotBtn').onclick = async function() {
+    if (!recordedChunks.length) return;
+    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+    const file = new File([blob], 'screen_record_' + Date.now() + '.webm', { type: 'video/webm' });
+    await saveVideo(file);
+    // Mark as screenshot/recording
+    const db = await openDB();
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.openCursor(null, 'prev');
+    req.onsuccess = function(e) {
+        const cursor = e.target.result;
+        if (cursor) {
+            const video = cursor.value;
+            video.screenshots = true;
+            store.put(video);
+        }
+    };
+    await loadPhotos();
+    await loadVideos();
+    showtoast('Saved to Screenshots/Recordings!');
+    closeTakePhotoModal();
+};
+// Discard screen video
+document.getElementById('discardScreenVideoBtn').onclick = function() {
+    recordedChunks = [];
+    document.getElementById('screenRecordActions').style.display = 'none';
+    document.getElementById('screenRecordStatus').style.display = 'none';
+};
+
+// --- Camera Record ---
+document.getElementById('cameraRecordBtn').onclick = async function() {
+    if (cameraMediaRecorder && cameraMediaRecorder.state === 'recording') {
+        stopCameraRecord();
+        return;
+    }
+    if (!cameraStream) {
+        showtoast('Camera not available');
+        return;
+    }
+    try {
+        cameraRecordedChunks = [];
+        cameraMediaRecorder = new MediaRecorder(cameraStream, { mimeType: 'video/webm; codecs=vp9' });
+        cameraMediaRecorder.ondataavailable = e => {
+            if (e.data.size > 0) cameraRecordedChunks.push(e.data);
+        };
+        cameraMediaRecorder.onstop = () => {
+            document.getElementById('cameraRecordActions').style.display = 'flex';
+            document.getElementById('cameraRecordStatus').style.display = 'none';
+        };
+        cameraMediaRecorder.start();
+        document.getElementById('cameraRecordStatus').textContent = 'Recording... Click red circle again to stop.';
+        document.getElementById('cameraRecordStatus').style.display = 'block';
+        document.getElementById('cameraRecordActions').style.display = 'none';
+        // Change icon to stop
+        document.getElementById('cameraRecordBtn').innerHTML = '<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2" fill="#ff4444" stroke="#fff" stroke-width="2.5"/></svg>';
+    } catch (e) {
+        showtoast('Camera record failed');
+    }
+};
+function stopCameraRecord(forceDiscard) {
+    if (cameraMediaRecorder && cameraMediaRecorder.state === 'recording') {
+        cameraMediaRecorder.stop();
+    }
+    document.getElementById('cameraRecordBtn').innerHTML = '<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="#ff4444" stroke="#fff" stroke-width="2.5"/></svg>';
+    if (forceDiscard) {
+        cameraRecordedChunks = [];
+        document.getElementById('cameraRecordActions').style.display = 'none';
+        document.getElementById('cameraRecordStatus').style.display = 'none';
+    }
+}
+
+// Save camera video to My Videos
+document.getElementById('saveCameraVideoBtn').onclick = async function() {
+    if (!cameraRecordedChunks.length) return;
+    const blob = new Blob(cameraRecordedChunks, { type: 'video/webm' });
+    const file = new File([blob], 'camera_record_' + Date.now() + '.webm', { type: 'video/webm' });
+    await saveVideo(file);
+    await loadVideos();
+    showtoast('Camera recording saved to My Videos!');
+    closeTakePhotoModal();
+};
+// Save camera video to Screenshots/Recordings
+document.getElementById('saveCameraShotBtn').onclick = async function() {
+    if (!cameraRecordedChunks.length) return;
+    const blob = new Blob(cameraRecordedChunks, { type: 'video/webm' });
+    const file = new File([blob], 'camera_record_' + Date.now() + '.webm', { type: 'video/webm' });
+    await saveVideo(file);
+    // Mark as screenshot/recording
+    const db = await openDB();
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.openCursor(null, 'prev');
+    req.onsuccess = function(e) {
+        const cursor = e.target.result;
+        if (cursor) {
+            const video = cursor.value;
+            video.screenshots = true;
+            store.put(video);
+        }
+    };
+    await loadPhotos();
+    await loadVideos();
+    showtoast('Saved to Screenshots/Recordings!');
+    closeTakePhotoModal();
+};
+// Discard camera video
+document.getElementById('discardCameraVideoBtn').onclick = function() {
+    cameraRecordedChunks = [];
+    document.getElementById('cameraRecordActions').style.display = 'none';
+    document.getElementById('cameraRecordStatus').style.display = 'none';
+};
+/* --- Video Upload & Display --- */
+
+// Save video to IndexedDB
+async function saveVideo(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        const video = {
+            name: file.name,
+            type: file.type,
+            data: new Uint8Array(arrayBuffer),
+            date: new Date().toISOString(),
+            isVideo: true,
+            favorite: false,
+            albums: []
+        };
+        const req = store.add(video);
+        req.onsuccess = () => resolve();
+        req.onerror = e => reject(e);
+    });
+}
+
+// Add hidden file input for video upload
+let videoInput = document.getElementById('videoUploadInput');
+if (!videoInput) {
+    videoInput = document.createElement('input');
+    videoInput.type = 'file';
+    videoInput.accept = 'video/*';
+    videoInput.style.display = 'none';
+    videoInput.id = 'videoUploadInput';
+    document.body.appendChild(videoInput);
+}
+
+// Handle Upload Video click
+document.querySelectorAll('.create-option').forEach(opt => {
+    if (opt.querySelector('.option-label')?.textContent.trim() === 'Upload Video') {
+        opt.addEventListener('click', () => {
+            videoInput.value = '';
+            videoInput.click();
+            document.querySelector('.create-wrapper').style.display = 'none';
+        });
+    }
+});
+
+// Handle video file selection
+videoInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        await saveVideo(file);
+        await loadVideos();
+        showtoast('Video uploaded!');
+    }
+});
+
+// Load and display videos from IndexedDB
+async function loadVideos() {
+    const db = await openDB();
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.getAll();
+    req.onsuccess = function() {
+        const videos = req.result.filter(item => item.isVideo && !item.trashed);
+        const videosList = document.getElementById('videosList');
+        videosList.innerHTML = '';
+        if (!videos.length) {
+            videosList.innerHTML = '<p>No videos available.</p>';
+        } else {
+            for (const video of videos) {
+                const blob = new Blob([video.data], { type: video.type });
+                const url = URL.createObjectURL(blob);
+                const thumb = document.createElement('video');
+                thumb.src = url;
+                thumb.controls = false;
+                thumb.muted = true;
+                thumb.style.maxWidth = '220px';
+                thumb.style.maxHeight = '140px';
+                thumb.style.margin = '10px';
+                thumb.style.borderRadius = '12px';
+                thumb.style.cursor = 'pointer';
+                thumb.setAttribute('data-video-id', video.id);
+                thumb.setAttribute('data-video-name', video.name);
+                thumb.setAttribute('data-video-type', video.type);
+                thumb.setAttribute('data-video-date', video.date);
+                thumb.setAttribute('data-video-size', video.data.length);
+                thumb.addEventListener('click', () => openVideoViewer(video.id));
+                // Show controls on hover
+                thumb.addEventListener('mouseenter', () => thumb.controls = true);
+                thumb.addEventListener('mouseleave', () => thumb.controls = false);
+                videosList.appendChild(thumb);
+            }
+        }
+    };
+}
+
+// Load videos on page load
+window.addEventListener('DOMContentLoaded', loadVideos);
+
+// --- Video Viewer Overlay with Custom Controls ---
+function createVideoViewerOverlay() {
+    if (document.getElementById('videoViewerOverlay')) return;
+    const overlay = document.createElement('div');
+    overlay.id = 'videoViewerOverlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+    overlay.style.background = 'rgba(0,0,0,0.88)';
+    overlay.style.display = 'none';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.zIndex = '4100';
+    overlay.innerHTML = `
+    <div class="liquid-glass" style="position:relative; max-width:100vw; max-height:100vh; border-radius:18px; box-shadow:0 8px 32px 0 rgba(31,38,135,0.2); padding:0; display:flex; flex-direction:column; width:100vw; height:100vh;">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 18px 0 18px;">
+            <span style="font-weight:bold; font-size:1.1rem; color:#fff;" id="videoViewerTitle"></span>
+            <button class="btn" id="videoViewerClose" title="Close" style="margin-left:10px;"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div style="flex:1; display:flex; align-items:center; justify-content:center; min-height:0; min-width:0;">
+            <video id="videoViewerVideo" style="max-width:100vw; max-height:100vh; width:100%; height:100%; object-fit:contain; border-radius:12px; background:#222;" preload="auto"></video>
+        </div>
+        <div id="videoCustomControls" class="liquid-glass" style="display:flex; align-items:center; justify-content:space-between; gap:18px; position:absolute; left:50%; bottom:32px; transform:translateX(-50%); min-width:340px; max-width:92vw; padding:14px 24px; border-radius:18px; ">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <button class="btn" id="videoPlayPause" title="Play/Pause"><svg id="videoPlayIcon" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></button>
+                <div style="position:relative;">
+                    <button class="btn" id="videoVolumeBtn" title="Volume"><svg id="videoVolumeIcon" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="19" y1="12" x2="23" y2="12"/></svg></button>
+                    <input type="range" id="videoVolumeSlider" min="0" max="1" step="0.01" value="1" style="display:none; position:absolute; left:40px; top:50%; transform:translateY(-50%); width:80px;">
+                </div>
+                <span id="videoTimestamp" style="font-size:1rem; color:#fff; opacity:0.8; margin-left:8px; min-width:70px; text-align:right;">0:00 / 0:00</span>
+            </div>
+            <input type="range" id="videoTimeSlider" min="0" max="100" value="0" style="flex:1; margin:0 18px; height:4px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <button class="btn" id="videoPiPBtn" title="Picture in Picture"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><rect x="7" y="13" width="7" height="5" rx="1" ry="1"/></svg></button>
+                <div style="position:relative;">
+                    <button class="btn" id="videoSettingsBtn" title="Settings"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09A1.65 1.65 0 0 0 9 3.09V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.09a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+                    <div id="videoSettingsMenu" class="liquid-glass" style="display:none; position:absolute; right:0; bottom:40px; background:rgba(30,20,50,0.97); border-radius:12px; box-shadow:0 4px 16px 0 rgba(31,38,135,0.18); min-width:120px; z-index:10; padding:10px;">
+                        <div style="font-weight:bold; margin-bottom:8px; color:#fff;">Speed</div>
+                        <div id="videoSpeedOptions"></div>
+                    </div>
+                </div>
+                <button class="btn" id="videoFullscreenBtn" title="Fullscreen"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+            </div>
+        </div>
+    </div>
+    `;
+    document.body.appendChild(overlay);
+
+    // Controls
+    const video = overlay.querySelector('#videoViewerVideo');
+    const playBtn = overlay.querySelector('#videoPlayPause');
+    const playIcon = overlay.querySelector('#videoPlayIcon');
+    const volumeBtn = overlay.querySelector('#videoVolumeBtn');
+    const volumeIcon = overlay.querySelector('#videoVolumeIcon');
+    const volumeSlider = overlay.querySelector('#videoVolumeSlider');
+    const timeSlider = overlay.querySelector('#videoTimeSlider');
+    const timestamp = overlay.querySelector('#videoTimestamp');
+    const pipBtn = overlay.querySelector('#videoPiPBtn');
+    const settingsBtn = overlay.querySelector('#videoSettingsBtn');
+    const settingsMenu = overlay.querySelector('#videoSettingsMenu');
+    const speedOptions = overlay.querySelector('#videoSpeedOptions');
+    const fullscreenBtn = overlay.querySelector('#videoFullscreenBtn');
+    const closeBtn = overlay.querySelector('#videoViewerClose');
+    const title = overlay.querySelector('#videoViewerTitle');
+
+    // Play/Pause
+    playBtn.onclick = () => {
+        if (video.paused) video.play();
+        else video.pause();
+    };
+    video.onplay = () => playIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>'; // Pause
+    video.onpause = () => playIcon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>'; // Play
+
+    // Volume
+    volumeBtn.onclick = () => {
+        video.muted = !video.muted;
+        updateVolumeIcon();
+    };
+    volumeBtn.onmouseenter = () => volumeSlider.style.display = 'block';
+    volumeBtn.onmouseleave = () => setTimeout(() => volumeSlider.style.display = 'none', 400);
+    volumeSlider.onmouseenter = () => volumeSlider.style.display = 'block';
+    volumeSlider.onmouseleave = () => volumeSlider.style.display = 'none';
+    volumeSlider.oninput = () => {
+        video.volume = volumeSlider.value;
+        video.muted = video.volume === 0;
+        updateVolumeIcon();
+    };
+    function updateVolumeIcon() {
+        if (video.muted || video.volume === 0) {
+            volumeIcon.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="19" y1="12" x2="23" y2="12"/>';
+        } else if (video.volume < 0.5) {
+            volumeIcon.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15 12a3 3 0 0 1-3 3"/>';
+        } else {
+            volumeIcon.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19 12a7 7 0 0 1-7 7"/>';
+        }
+    }
+
+    // Time slider and timestamp
+    video.ontimeupdate = () => {
+        timeSlider.value = video.duration ? (video.currentTime / video.duration) * 100 : 0;
+        timestamp.textContent = formatTime(video.currentTime) + ' / ' + formatTime(video.duration);
+    };
+    timeSlider.oninput = () => {
+        if (video.duration) video.currentTime = (timeSlider.value / 100) * video.duration;
+    };
+    function formatTime(sec) {
+        if (!isFinite(sec)) return '0:00';
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    // PiP
+    pipBtn.onclick = async () => {
+        if ('pictureInPictureEnabled' in document) {
+            try {
+                await video.requestPictureInPicture();
+            } catch (e) {
+                showtoast('PiP not available');
+            }
+        } else {
+            showtoast('PiP not supported');
+        }
+    };
+
+    // Settings (speed)
+    settingsBtn.onclick = (e) => {
+        e.stopPropagation();
+        settingsMenu.style.display = settingsMenu.style.display === 'none' ? 'block' : 'none';
+    };
+    document.addEventListener('click', (e) => {
+        if (!settingsMenu.contains(e.target) && e.target !== settingsBtn) {
+            settingsMenu.style.display = 'none';
+        }
+    });
+    const speeds = [1, 1.25, 1.5, 1.75, 2, 4, 5, 8, 10, 16, 0.75, 0.5, 0.25];
+    speedOptions.innerHTML = '';
+    speeds.forEach(spd => {
+        const btn = document.createElement('button');
+        btn.className = 'btn';
+        btn.style.width = '100%';
+        btn.style.marginBottom = '6px';
+        btn.textContent = (spd + 'x').replace('.00', '');
+        btn.onclick = () => {
+            video.playbackRate = spd;
+            settingsMenu.style.display = 'none';
+            showtoast('Speed: ' + spd + 'x');
+        };
+        speedOptions.appendChild(btn);
+    });
+
+    // Fullscreen
+    fullscreenBtn.onclick = () => {
+        const el = overlay.querySelector('.liquid-glass');
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        } else {
+            if (el.requestFullscreen) el.requestFullscreen();
+        }
+    };
+
+    // Close
+    closeBtn.onclick = () => {
+        overlay.style.display = 'none';
+        video.pause();
+        video.src = '';
+    };
+    overlay.addEventListener('click', e => {
+        if (e.target === overlay) {
+            overlay.style.display = 'none';
+            video.pause();
+            video.src = '';
+        }
+    });
+
+    // Hide controls unless hover
+    overlay.onmouseenter = () => overlay.querySelector('#videoCustomControls').style.opacity = '1';
+    overlay.onmouseleave = () => overlay.querySelector('#videoCustomControls').style.opacity = '0.85';
+}
+createVideoViewerOverlay();
+
+// Open video viewer
+async function openVideoViewer(videoId) {
+    const db = await openDB();
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.get(videoId);
+    req.onsuccess = function() {
+        const videoObj = req.result;
+        if (!videoObj) return;
+        const blob = new Blob([videoObj.data], { type: videoObj.type });
+        const url = URL.createObjectURL(blob);
+        const overlay = document.getElementById('videoViewerOverlay');
+        const video = overlay.querySelector('#videoViewerVideo');
+        const title = overlay.querySelector('#videoViewerTitle');
+        video.src = url;
+        video.currentTime = 0;
+        video.playbackRate = 1;
+        video.volume = 1;
+        video.muted = false;
+        overlay.querySelector('#videoVolumeSlider').value = 1;
+        overlay.querySelector('#videoCustomControls').style.opacity = '1';
+        title.textContent = videoObj.name;
+        overlay.style.display = 'flex';
+        setTimeout(() => video.focus(), 100);
+    };
+}
+// -----------------------------
+// Secure Photo Isolation Layer
+// -----------------------------
+
+// DO NOT expose actual photo data anywhere.
+// Convert photos to Blob URLs ONLY inside isolated functions.
+// Never attach raw data to window or DOM attributes.
+
+// Create a secure blob URL for display
+async function displaySecurePhoto(blob, imgElement) {
+    // Create blob URL (isolated)
+    const url = URL.createObjectURL(blob);
+
+    // Bind it privately to the element
+    imgElement.dataset.photoId = crypto.randomUUID();
+    imgElement.dataset.internalUrl = url; // hidden, not visible to extensions
+    imgElement.src = url;
+
+    // Protect against extensions reading <img src> blobs
+    Object.defineProperty(imgElement, 'src', {
+        configurable: true,
+        enumerable: false,
+        writable: true,
+        value: url
+    });
+}
+window.addEventListener('pagehide', revokeAllPhotoBlobs);
+window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') revokeAllPhotoBlobs();
+});
+
+// Revoke all blob URLs when leaving the page
+function revokeAllPhotoBlobs() {
+    document.querySelectorAll('img[data-internal-url]').forEach(img => {
+        const url = img.dataset.internalUrl;
+        if (url) {
+            URL.revokeObjectURL(url);
+            delete img.dataset.internalUrl;
+        }
+    });
+}
+
+window.addEventListener('beforeunload', revokeAllPhotoBlobs);
+window.addEventListener('pagehide', revokeAllPhotoBlobs);  // iOS fix
+window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') revokeAllPhotoBlobs();
+});
+/* --- SPA Hash Routing for Sections and Photo/Video Viewer --- */  
+function updateSectionFromHash() {
+    const hash = window.location.hash || '';
+    // Section: #/photos, #/videos, #/albums, #/screenshots, #/favorites, #/trash
+    // Photo: #/photo/<id>
+    // Video: #/video/<id>
+    const sectionMap = {
+        '/photos': 'photosContent',
+        '/videos': 'videosContent',
+        '/albums': 'albumsContent',
+        '/screenshots': 'screenshotsContent',
+        '/favorites': 'favoritesContent',
+        '/trash': 'trashContent'
+    };
+    let matched = false;
+    if (hash.startsWith('#/photo/')) {
+        const id = parseInt(hash.replace('#/photo/', ''), 10);
+        if (!isNaN(id)) {
+            openPhotoViewer(id);
+            matched = true;
+        }
+    } else if (hash.startsWith('#/video/')) {
+        const id = parseInt(hash.replace('#/video/', ''), 10);
+        if (!isNaN(id)) {
+            openVideoViewer(id);
+            matched = true;
+        }
+    } else {
+        // Section navigation
+        Object.keys(sectionMap).forEach(h => {
+            if (hash === '#' + h) {
+                matched = true;
+                // Show section
+                document.querySelectorAll('.content').forEach(section => {
+                    section.style.display = (section.id === sectionMap[h]) ? 'block' : 'none';
+                });
+                // Highlight sidebar
+                document.querySelectorAll('.sidebar-item').forEach(item => {
+                    item.classList.toggle('active', item.getAttribute('data-page') === sectionMap[h]);
+                });
+            }
+        });
+    }
+    // Default to photos if no match
+    if (!matched) {
+        window.location.hash = '#/photos';
+    }
+}
+
+// Sidebar navigation: update hash
+document.querySelectorAll('.sidebar-item').forEach(item => {
+    item.addEventListener('click', () => {
+        const page = item.getAttribute('data-page');
+        const hash = {
+            'photosContent': '#/photos',
+            'videosContent': '#/videos',
+            'albumsContent': '#/albums',
+            'screenshotsContent': '#/screenshots',
+            'favoritesContent': '#/favorites',
+            'trashContent': '#/trash'
+        }[page];
+        if (hash) window.location.hash = hash;
+    });
+});
+
+// When opening photo/video viewer, update hash
+const origOpenPhotoViewer = openPhotoViewer;
+openPhotoViewer = async function(photoId) {
+    window.location.hash = '#/photo/' + photoId;
+    await origOpenPhotoViewer(photoId);
+};
+const origOpenVideoViewer = openVideoViewer;
+openVideoViewer = async function(videoId) {
+    window.location.hash = '#/video/' + videoId;
+    await origOpenVideoViewer(videoId);
+};
+
+// When closing photo/video viewer, go back to current section hash
+function closePhotoViewerToSection() {
+    // Always hide overlays
+    const photoOverlay = document.getElementById('photoViewerOverlay');
+    if (photoOverlay) photoOverlay.style.display = 'none';
+    const videoOverlay = document.getElementById('videoViewerOverlay');
+    if (videoOverlay) videoOverlay.style.display = 'none';
+
+    // Try to keep current section, fallback to #/photos
+    const hash = window.location.hash;
+    let section = '#/photos';
+    if (hash.startsWith('#/photo/') || hash.startsWith('#/video/')) {
+        // Try to find last section in history, else fallback
+        if (window._lastSectionHash) section = window._lastSectionHash;
+    } else if (hash in { '#/photos':1, '#/videos':1, '#/albums':1, '#/screenshots':1, '#/favorites':1, '#/trash':1 }) {
+        section = hash;
+    }
+    // If already on section, just update overlays; else update hash
+    if (window.location.hash !== section) {
+        window.location.hash = section;
+    } else {
+        updateSectionFromHash();
+    }
+}
+document.getElementById('photoViewerOverlay').querySelector('#photoViewerClose').onclick = closePhotoViewerToSection;
+document.getElementById('videoViewerOverlay').querySelector('#videoViewerClose').onclick = closePhotoViewerToSection;
+
+// Track last section hash for back navigation
+window._lastSectionHash = '#/photos';
+window.addEventListener('hashchange', () => {
+    const hash = window.location.hash;
+    if (!hash.startsWith('#/photo/') && !hash.startsWith('#/video/')) {
+        window._lastSectionHash = hash;
+    }
+    updateSectionFromHash();
+});
+
+// On load, set section from hash
+window.addEventListener('DOMContentLoaded', updateSectionFromHash);
+/* --- Mobile Search Bar & Search Functionality --- */
+
+// Create mobile search bar if not exists
+function createMobileSearchBar() {
+    if (document.getElementById('mobileSearchBar')) return;
+    const bar = document.createElement('div');
+    bar.id = 'mobileSearchBar';
+    bar.className = 'liquid-glass';
+    bar.style.position = 'fixed';
+    bar.style.top = '0';
+    bar.style.left = '0';
+    bar.style.width = '100vw';
+    bar.style.zIndex = '2001';
+    bar.style.display = 'none';
+    bar.style.padding = '12px 16px 10px 16px';
+    bar.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="mobileSearchInput" placeholder="Search Photos" style="flex:1;padding:6px 8px;border:none;background:transparent;color:white;font-size:1rem;outline:none;">
+            <button id="closeMobileSearch" class="btn" style="padding:6px 10px;">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+    `;
+    document.body.appendChild(bar);
+}
+
+// Attach mobile search bar event listeners after DOM is ready
+window.addEventListener('DOMContentLoaded', function() {
+    createMobileSearchBar();
+
+    // Show mobile search bar on icon click
+    var mobileSearchIcon = document.getElementById('mobileSearchIcon');
+    if (mobileSearchIcon) {
+        mobileSearchIcon.onclick = function(e) {
+            e.stopPropagation();
+            document.getElementById('mobileSearchBar').style.display = 'block';
+            // document.body.style.overflow = 'hidden'; // Allow scrolling when mobile search bar is open
+            setTimeout(() => {
+                var input = document.getElementById('mobileSearchInput');
+                if (input) input.focus();
+            }, 100);
+        };
+    }
+
+    // Hide mobile search bar
+    var closeMobileSearch = document.getElementById('closeMobileSearch');
+    if (closeMobileSearch) {
+        closeMobileSearch.onclick = function() {
+            document.getElementById('mobileSearchBar').style.display = 'none';
+            // document.body.style.overflow = '';
+            document.getElementById('mobileSearchInput').value = '';
+            showAllPhotos();
+        };
+    }
+
+    // Hide on outside click
+    var mobileSearchBar = document.getElementById('mobileSearchBar');
+    if (mobileSearchBar) {
+        mobileSearchBar.addEventListener('click', function(e) {
+            if (e.target === mobileSearchBar) {
+                var closeBtn = document.getElementById('closeMobileSearch');
+                if (closeBtn) closeBtn.click();
+            }
+        });
+    }
+
+    // Mobile search input: Enter key triggers search
+    var mobileSearchInput = document.getElementById('mobileSearchInput');
+    if (mobileSearchInput) {
+        mobileSearchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const q = this.value.trim();
+                // Show Photos section and search
+                document.querySelectorAll('.content').forEach(section => {
+                    section.style.display = (section.id === 'photosContent') ? 'block' : 'none';
+                });
+                window.location.hash = '#/photos';
+                searchPhotos(q);
+            }
+        });
+    }
+});
+
+// Helper to show all photos (used when closing mobile search)
+async function showAllPhotos() {
+    await loadPhotos();
+}
+
+// --- Search Logic for Both Bars ---
+function normalizeText(txt) {
+    return (txt || '').toLowerCase();
+}
+async function searchPhotos(query) {
+    const db = await openDB();
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.getAll();
+    req.onsuccess = function() {
+        const photos = req.result.filter(photo => !photo.trashed && !photo.isVideo);
+        const photosList = document.getElementById('photosList');
+        photosList.innerHTML = '';
+        let found = false;
+        for (const photo of photos) {
+            // Search in name, type, date
+            const text = [photo.name, photo.type, photo.date].join(' ').toLowerCase();
+            if (normalizeText(text).includes(normalizeText(query))) {
+                found = true;
+                const blob = new Blob([photo.data], { type: photo.type });
+                const url = URL.createObjectURL(blob);
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = photo.name;
+                img.style.maxWidth = '180px';
+                img.style.maxHeight = '180px';
+                img.style.margin = '10px';
+                img.style.borderRadius = '12px';
+                img.style.cursor = 'pointer';
+                img.setAttribute('data-photo-id', photo.id);
+                img.onclick = () => openPhotoViewer(photo.id);
+                photosList.appendChild(img);
+            }
+        }
+        if (!found) {
+            photosList.innerHTML = '<p>No photos found.</p>';
+        }
+    };
+}
+// Listen for search input (desktop)
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        const q = this.value.trim();
+        searchPhotos(q);
+    }
+});
+// --- Apps Icon Functionality ---
+(function() {
+    // Create the apps wrapper/modal if not exists
+    function createAppsWrapper() {
+        if (document.getElementById('appsWrapper')) return;
+        const wrapper = document.createElement('div');
+        wrapper.id = 'appsWrapper';
+        wrapper.className = 'liquid-glass';
+        wrapper.style.position = 'fixed';
+        wrapper.style.top = '50%';
+        wrapper.style.left = '50%';
+        wrapper.style.transform = 'translate(-50%, -50%)';
+        wrapper.style.width = '500px';
+        wrapper.style.height = '800px';
+        wrapper.style.borderRadius = '18px';
+        wrapper.style.boxShadow = '0 8px 32px 0 rgba(31,38,135,0.18)';
+        wrapper.style.zIndex = '5001';
+        wrapper.style.display = 'none';
+        wrapper.style.overflow = 'hidden';
+        wrapper.innerHTML = `
+            <div class="liquid-glass" style="display:flex;justify-content:space-between;align-items:center;padding:10px 18px;border-radius:18px 18px 0 0;">
+                <span style="font-weight:bold;font-size:1.1rem;color:#fff;">Munetios Apps</span>
+                <button id="closeAppsWrapper" class="btn" style="padding:6px 10px;">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <iframe src="https://www.munetios.com/apps/" style="width:100%;height:calc(100% - 48px);border:none;border-radius:0 0 18px 18px;background:transparent;"></iframe>
+        `;
+        document.body.appendChild(wrapper);
+
+        // Close button
+        wrapper.querySelector('#closeAppsWrapper').onclick = function(e) {
+            e.stopPropagation();
+            wrapper.style.display = 'none';
+        };
+
+        // Prevent click inside modal from closing it
+        wrapper.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Click outside to close
+        document.addEventListener('mousedown', function(e) {
+            const appsIcon = document.querySelector('.topbar-item[title="Apps"]');
+            const wrapper = document.getElementById('appsWrapper');
+            if (wrapper && wrapper.style.display === 'block' && !wrapper.contains(e.target) && (!appsIcon || !appsIcon.contains(e.target))) {
+                wrapper.style.display = 'none';
+            }
+        });
+    }
+
+    // Find the Apps icon in the topbar
+    window.addEventListener('DOMContentLoaded', function() {
+        const appsIcon = document.querySelector('.topbar-item[title="Apps"]');
+        if (appsIcon) {
+            createAppsWrapper();
+            appsIcon.style.position = 'relative';
+            appsIcon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const wrapper = document.getElementById('appsWrapper');
+                if (wrapper.style.display === 'block') {
+                    wrapper.style.display = 'none';
+                } else {
+                    wrapper.style.display = 'block';
+                }
+            });
+        }
+    });
+})();
+(function() {
+    // --- Settings Modal ---
+    function createSettingsModal() {
+        if (document.getElementById('settingsModal')) return;
+        const modal = document.createElement('div');
+        modal.id = 'settingsModal';
+        modal.className = 'modal';
+        modal.style.display = 'none';
+        modal.innerHTML = `
+            <div class="modal-content liquid-glass" style="max-width:720px; overflow-y:auto; height:80vh;">
+                <h2 style="margin-top:0;">Settings</h2>
+                <div style="margin-bottom:18px;">
+                    <b>Theme:</b>
+                    <div id="themeOptions" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;">
+                        <button class="btn" data-theme="dark-purple" style="background:#1d0a30;">Dark Purple</button>
+                        <button class="btn" data-theme="white" style="background:#fff;color:#222;">White</button>
+                        <button class="btn" data-theme="dark-red" style="background:#3a0a0a;">Dark Red</button>
+                        <button class="btn" data-theme="light-red" style="background:#ffb3b3;color:#222;">Light Red</button>
+                        <button class="btn" data-theme="dark-orange" style="background:#3a2100;">Dark Orange</button>
+                        <button class="btn" data-theme="light-orange" style="background:#ffd699;color:#222;">Light Orange</button>
+                        <button class="btn" data-theme="blue" style="background:#0a1d30;">Blue</button>
+                        <button class="btn" data-theme="light-blue" style="background:#b3e0ff;color:#222;">Light Blue</button>
+                        <button class="btn" data-theme="dark-blue" style="background:#001a33;">Dark Blue</button>
+                        <button class="btn" data-theme="green" style="background:#0a301d;">Green</button>
+                        <button class="btn" data-theme="light-green" style="background:#b3ffd9;color:#222;">Light Green</button>
+                        <button class="btn" data-theme="dark-green" style="background:#00331a;">Dark Green</button>
+                        <button class="btn" data-theme="pink" style="background:#30102a;">Pink</button>
+                        <button class="btn" data-theme="light-pink" style="background:#ffd6f6;color:#222;">Light Pink</button>
+                        <button class="btn" data-theme="dark-pink" style="background:#4d0033;">Dark Pink</button>
+                        <button class="btn" data-theme="yellow" style="background:#fff700;color:#222;">Yellow</button>
+                        <button class="btn" data-theme="light-yellow" style="background:#ffffb3;color:#222;">Light Yellow</button>
+                        <button class="btn" data-theme="dark-yellow" style="background:#b3a100;">Dark Yellow</button>
+                        <button class="btn" data-theme="gold" style="background:#ffd700;color:#222;">Gold</button>
+                        <button class="btn" data-theme="brown" style="background:#4e2e0e;">Brown</button>
+                        <button class="btn" data-theme="light-brown" style="background:#e6ccb3;color:#222;">Light Brown</button>
+                        <button class="btn" data-theme="dark-brown" style="background:#2d1400;">Dark Brown</button>
+                        <button class="btn" data-theme="gray" style="background:#888;">Gray</button>
+                        <button class="btn" data-theme="light-gray" style="background:#e0e0e0;color:#222;">Light Gray</button>
+                        <button class="btn" data-theme="dark-gray" style="background:#222;">Dark Gray</button>
+                        <button class="btn" data-theme="black" style="background:#000;">Black</button>
+                        <button class="btn" data-theme="orange" style="background:#ff9900;color:#222;">Orange</button>
+                        <button class="btn" data-theme="teal" style="background:#008080;">Teal</button>
+                        <button class="btn" data-theme="light-teal" style="background:#b3fff6;color:#222;">Light Teal</button>
+                        <button class="btn" data-theme="purple" style="background:#800080;">Purple</button>
+                        <button class="btn" data-theme="light-purple" style="background:#e0b3ff;color:#222;">Light Purple</button>
+                        <button class="btn" data-theme="dark-purple2" style="background:#2e003e;">Dark Purple 2</button>
+                        <button class="btn" data-theme="red" style="background:#ff0000;">Red</button>
+                        <button class="btn" data-theme="light-red2" style="background:#ffcccc;color:#222;">Light Red 2</button>
+                        <button class="btn" data-theme="dark-red2" style="background:#660000;">Dark Red 2</button>
+                        <button class="btn" data-theme="navy" style="background:#001f3f;">Navy</button>
+                        <button class="btn" data-theme="aqua" style="background:#7fdbff;color:#222;">Aqua</button>
+                        <button class="btn" data-theme="lime" style="background:#01ff70;color:#222;">Lime</button>
+                        <button class="btn" data-theme="olive" style="background:#3d9970;">Olive</button>
+                        <button class="btn" data-theme="maroon" style="background:#85144b;">Maroon</button>
+                        <button class="btn" data-theme="silver" style="background:#dddddd;color:#222;">Silver</button>
+                    </div>
+                </div>
+                <div style="margin-bottom:18px;">
+                    <b>Photo Quality:</b>
+                    <select id="photoQualitySelect" class="btn" style="margin-left:10px;">
+                        <option value="high">High</option>
+                        <option value="low">Low</option>
+                    </select>
+                    <span style="color:#aaa;font-size:0.95em;">(Affects new photo uploads)</span>
+                </div>
+                <div style="margin-bottom:18px;">
+                    <b>Export Data:</b>
+                    <button class="btn" id="exportDataBtn">Export All (ZIP)</button>
+                    <span style="color:#aaa;font-size:0.95em;">Download all photos, videos, and JSON</span>
+                </div>
+                <div style="margin-bottom:18px;">
+                    <b>Import Data:</b>
+                    <input type="file" id="importDataInput" style="display:none;" multiple>
+                    <button class="btn" id="importDataBtn">Import ZIP/JSON/Photo/Video</button>
+                    <span style="color:#aaa;font-size:0.95em;">Import ZIP, JSON, or single photo/video</span>
+                </div>
+                <div style="margin-bottom:18px;">
+                    <b>Delete All Data:</b>
+                    <button class="btn" id="deleteAllDataBtn" style="background:#ff4d4d;border-color:#ff4d4d;">Delete Everything</button>
+                </div>
+                <div style="display:flex;justify-content:flex-end;gap:10px;">
+                    <button class="btn" id="closeSettingsModal">Close</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        // Theme logic
+        const themeMap = {
+            "dark-purple": { bg: "#1d0a30", color: "#fff" },
+            "white": { bg: "#fff", color: "#222" },
+            "dark-red": { bg: "#3a0a0a", color: "#fff" },
+            "light-red": { bg: "#ffb3b3", color: "#222" },
+            "dark-orange": { bg: "#3a2100", color: "#fff" },
+            "light-orange": { bg: "#ffd699", color: "#222" },
+            "blue": { bg: "#0a1d30", color: "#fff" },
+            "light-blue": { bg: "#b3e0ff", color: "#222" },
+            "dark-blue": { bg: "#001a33", color: "#fff" },
+            "green": { bg: "#0a301d", color: "#fff" },
+            "light-green": { bg: "#b3ffd9", color: "#222" },
+            "dark-green": { bg: "#00331a", color: "#fff" },
+            "pink": { bg: "#30102a", color: "#fff" },
+            "light-pink": { bg: "#ffd6f6", color: "#222" },
+            "dark-pink": { bg: "#4d0033", color: "#fff" },
+            "yellow": { bg: "#fff700", color: "#222" },
+            "light-yellow": { bg: "#ffffb3", color: "#222" },
+            "dark-yellow": { bg: "#b3a100", color: "#fff" },
+            "gold": { bg: "#ffd700", color: "#222" },
+            "brown": { bg: "#4e2e0e", color: "#fff" },
+            "light-brown": { bg: "#e6ccb3", color: "#222" },
+            "dark-brown": { bg: "#2d1400", color: "#fff" },
+            "gray": { bg: "#888", color: "#fff" },
+            "light-gray": { bg: "#e0e0e0", color: "#222" },
+            "dark-gray": { bg: "#222", color: "#fff" },
+            "black": { bg: "#000", color: "#fff" },
+            "orange": { bg: "#ff9900", color: "#222" },
+            "teal": { bg: "#008080", color: "#fff" },
+            "light-teal": { bg: "#b3fff6", color: "#222" },
+            "purple": { bg: "#800080", color: "#fff" },
+            "light-purple": { bg: "#e0b3ff", color: "#222" },
+            "dark-purple2": { bg: "#2e003e", color: "#fff" },
+            "red": { bg: "#ff0000", color: "#fff" },
+            "light-red2": { bg: "#ffcccc", color: "#222" },
+            "dark-red2": { bg: "#660000", color: "#fff" },
+            "navy": { bg: "#001f3f", color: "#fff" },
+            "aqua": { bg: "#7fdbff", color: "#222" },
+            "lime": { bg: "#01ff70", color: "#222" },
+            "olive": { bg: "#3d9970", color: "#fff" },
+            "maroon": { bg: "#85144b", color: "#fff" },
+            "silver": { bg: "#dddddd", color: "#222" }
+        };
+        function applyTheme(theme) {
+            const t = themeMap[theme] || themeMap["dark-purple"];
+            document.body.style.backgroundColor = t.bg;
+            document.body.style.color = t.color;
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', t.bg);
+            localStorage.setItem('munetios_theme', theme);
+        }
+        // Restore theme on load
+        const savedTheme = localStorage.getItem('munetios_theme') || "dark-purple";
+        applyTheme(savedTheme);
+        // Theme button events
+        modal.querySelectorAll('#themeOptions .btn').forEach(btn => {
+            btn.onclick = function() {
+                applyTheme(btn.getAttribute('data-theme'));
+            };
+        });
+
+        // Photo quality logic
+        const photoQualitySelect = modal.querySelector('#photoQualitySelect');
+        photoQualitySelect.value = localStorage.getItem('munetios_photo_quality') || 'high';
+        photoQualitySelect.onchange = function() {
+            localStorage.setItem('munetios_photo_quality', photoQualitySelect.value);
+        };
+
+        // Export data
+        modal.querySelector('#exportDataBtn').onclick = async function() {
+            showtoast('Preparing export...');
+            const db = await openDB();
+            const tx = db.transaction([STORE_NAME, ALBUM_STORE], 'readonly');
+            const photos = await new Promise(res => {
+                const req = tx.objectStore(STORE_NAME).getAll();
+                req.onsuccess = () => res(req.result);
+            });
+            const albums = await new Promise(res => {
+                const req = tx.objectStore(ALBUM_STORE).getAll();
+                req.onsuccess = () => res(req.result);
+            });
+            // Use JSZip (local)
+            if (!window.JSZip) {
+                showtoast('JSZip library not loaded!');
+                return;
+            }
+            const zip = new JSZip();
+            const meta = { photos: [], albums };
+            photos.forEach((p, i) => {
+                const ext = p.isVideo ? '.webm' : '.png';
+                const fname = (p.name || (p.isVideo ? 'video_' : 'photo_') + i) + ext;
+                zip.file(fname, new Blob([p.data], { type: p.type }));
+                meta.photos.push({ ...p, data: undefined, file: fname });
+            });
+            zip.file('munetios_photos.json', JSON.stringify(meta, null, 2));
+            zip.generateAsync({ type: "blob" }).then(blob => {
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'munetios_photos_export.zip';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                showtoast('Exported ZIP downloaded!');
+            });
+        };
+
+        // Import data
+        const importInput = modal.querySelector('#importDataInput');
+        modal.querySelector('#importDataBtn').onclick = () => importInput.click();
+        importInput.onchange = async function(e) {
+            const files = Array.from(importInput.files);
+            if (!files.length) return;
+            for (const file of files) {
+                if (file.name.endsWith('.zip')) {
+                    // Use JSZip (local)
+                    if (!window.JSZip) {
+                        showtoast('JSZip library not loaded!');
+                        continue;
+                    }
+                    await importZip(file);
+                } else if (file.name.endsWith('.json')) {
+                    try {
+                        const text = await file.text();
+                        const meta = JSON.parse(text);
+                        // No binary data, skip
+                        if (meta.albums && Array.isArray(meta.albums)) {
+                            for (const a of meta.albums) {
+                                await addAlbum(a.name);
+                            }
+                        }
+                        showtoast('Imported JSON (metadata only)');
+                    } catch (e) {
+                        showtoast('Invalid JSON');
+                    }
+                } else if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
+                    if (file.type.startsWith('image/')) {
+                        await savePhoto(file);
+                        showtoast('Photo imported!');
+                    } else {
+                        await saveVideo(file);
+                        showtoast('Video imported!');
+                    }
+                }
+            }
+            await loadPhotos();
+            await loadVideos();
+        };
+        async function importZip(file) {
+            showtoast('Importing ZIP...');
+            const zip = await JSZip.loadAsync(file);
+            const metaFile = zip.file('munetios_photos.json');
+            let meta = { photos: [], albums: [] };
+            if (metaFile) {
+                meta = JSON.parse(await metaFile.async('string'));
+            }
+            // Import albums
+            if (meta.albums && Array.isArray(meta.albums)) {
+                for (const a of meta.albums) {
+                    await addAlbum(a.name);
+                }
+            }
+            // Import photos/videos
+            for (const fname in zip.files) {
+                if (fname.endsWith('.png') || fname.endsWith('.jpg') || fname.endsWith('.jpeg') || fname.endsWith('.webm') || fname.endsWith('.mp4')) {
+                    const blob = await zip.file(fname).async('blob');
+                    const file = new File([blob], fname, { type: blob.type });
+                    if (file.type.startsWith('image/')) {
+                        await savePhoto(file);
+                    } else if (file.type.startsWith('video/')) {
+                        await saveVideo(file);
+                    }
+                }
+            }
+            showtoast('ZIP import complete!');
+            await loadPhotos();
+            await loadVideos();
+        }
+
+        // Delete all data
+        modal.querySelector('#deleteAllDataBtn').onclick = function() {
+            showDeleteAllDataModal();
+        };
+
+        // Close
+        modal.querySelector('#closeSettingsModal').onclick = () => {
+            modal.style.display = 'none';
+        };
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) modal.style.display = 'none';
+        });
+    }
+    // Attach event to Settings icon
+    window.addEventListener('DOMContentLoaded', function() {
+        createSettingsModal();
+        const settingsIcon = document.querySelector('.topbar-item[title="Settings"]');
+        if (settingsIcon) {
+            settingsIcon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const modal = document.getElementById('settingsModal');
+                modal.style.display = 'flex';
+            });
+        }
+    });
+
+    // --- Delete All Data Modal with 10 warnings and confirm code ---
+    function showDeleteAllDataModal() {
+        let modal = document.getElementById('deleteAllDataModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'deleteAllDataModal';
+            modal.className = 'modal';
+            document.body.appendChild(modal);
+        }
+        const warnings = [
+            "This will <b>delete all your photos and videos</b> from this device.",
+            "All albums and favorites will be lost.",
+            "This action <b>cannot be undone</b>.",
+            "Your data will be <b>permanently erased</b>.",
+            "You will <b>not be able to recover</b> any deleted data.",
+            "All settings and preferences will be reset.",
+            "Export your data first if you want to keep a backup.",
+            "This operation is <b>immediate and final</b>.",
+            "You will lose all imported and created content.",
+            "Are you absolutely sure you want to continue?"
+        ];
+        let step = 0;
+        let confirmCode = '';
+        function randomCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let code = '';
+            for (let i = 0; i < 5; ++i) code += chars[Math.floor(Math.random() * chars.length)];
+            return code;
+        }
+        function renderStep() {
+            if (step < warnings.length) {
+                modal.innerHTML = `
+                    <div class="modal-content liquid-glass" style="max-width:420px;">
+                        <h2 style="color:#ff4d4d;">Delete All Data?</h2>
+                        <ul style="color:#ffb3b3; font-size:1rem; margin-bottom:18px; padding-left:20px;">
+                            <li>${warnings[step]}</li>
+                        </ul>
+                        <div style="display:flex;justify-content:flex-end;gap:10px;">
+                            <button class="btn" id="deleteAllCancelBtn">Cancel</button>
+                            <button class="btn" id="deleteAllNextBtn">Next</button>
+                        </div>
+                    </div>
+                `;
+                modal.style.display = 'flex';
+                modal.querySelector('#deleteAllCancelBtn').onclick = () => {
+                    modal.style.display = 'none';
+                };
+                modal.querySelector('#deleteAllNextBtn').onclick = () => {
+                    step++;
+                    renderStep();
+                };
+            } else {
+                confirmCode = randomCode();
+                modal.innerHTML = `
+                    <div class="modal-content liquid-glass" style="max-width:420px;">
+                        <h2 style="color:#ff4d4d;">Final Confirmation</h2>
+                        <div style="margin-bottom:12px;color:#fff;">Type the code below to confirm deletion:</div>
+                        <div style="font-size:1.5rem;font-weight:bold;letter-spacing:8px;color:#ffd700;text-align:center;margin-bottom:12px;">${confirmCode}</div>
+                        <input type="text" id="deleteAllCodeInput" maxlength="5" style="width:100%;padding:10px;margin-bottom:18px;border:none;border-radius:5px;background-color:#ffffff1a;color:white;text-align:center;font-size:1.2rem;">
+                        <div style="display:flex;justify-content:flex-end;gap:10px;">
+                            <button class="btn" id="deleteAllCancelBtn">Cancel</button>
+                            <button class="btn" id="deleteAllConfirmBtn" style="background:#ff4d4d;border-color:#ff4d4d;">Delete Everything</button>
+                        </div>
+                    </div>
+                `;
+                modal.style.display = 'flex';
+                modal.querySelector('#deleteAllCancelBtn').onclick = () => {
+                    modal.style.display = 'none';
+                };
+                modal.querySelector('#deleteAllConfirmBtn').onclick = async () => {
+                    const val = modal.querySelector('#deleteAllCodeInput').value.trim().toUpperCase();
+                    if (val !== confirmCode) {
+                        showtoast('Code does not match!');
+                        return;
+                    }
+                    // Delete all IndexedDB data
+                    modal.querySelector('#deleteAllConfirmBtn').disabled = true;
+                    showtoast('Deleting all data...');
+                    indexedDB.deleteDatabase(DB_NAME);
+                    setTimeout(() => {
+                        showtoast('All data deleted! Reloading...');
+                        window.location.reload();
+                    }, 1200);
+                };
+            }
+        }
+        step = 0;
+        renderStep();
+    }
+})();
+(function() {
+    // Create Help Modal if not exists
+    function createHelpModal() {
+        if (document.getElementById('helpModal')) return;
+        const modal = document.createElement('div');
+        modal.id = 'helpModal';
+        modal.className = 'modal';
+        modal.style.display = 'none';
+        modal.innerHTML = `
+            <div class="modal-content liquid-glass" style="max-width:500px;">
+                <h2 style="margin-top:0;">Help &amp; Contact</h2>
+                <div style="margin-bottom:18px;">
+                    <b>How to use Munetios Photos:</b>
+                    <ul style="margin:10px 0 0 18px; color:#fff;">
+                        <li>Upload photos or videos using the <b>Create</b> button.</li>
+                        <li>Take photos or record videos directly from your camera.</li>
+                        <li>Organize your media into albums and mark favorites.</li>
+                        <li>Use the search bar to quickly find your photos.</li>
+                        <li>Click a photo or video to view, share, or download it.</li>
+                        <li>Deleted items go to Trash and can be restored or permanently deleted.</li>
+                    </ul>
+                </div>
+                <div style="margin-bottom:18px;">
+                    <b>Contact:</b>
+                    <div>
+                        Email: 
+                        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=minecraftgamer97529@gmail.com" target="_blank" rel="noopener" style="color:#ffd700;">
+                            minecraftgamer97529@gmail.com
+                        </a>
+                        <span style="color:#aaa; font-size:0.95em;">(opens Gmail)</span>
+                    </div>
+                </div>
+                <div style="display:flex;justify-content:flex-end;gap:10px;">
+                    <button class="btn" id="closeHelpModal">Close</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        modal.querySelector('#closeHelpModal').onclick = () => {
+            modal.style.display = 'none';
+        };
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) modal.style.display = 'none';
+        });
+    }
+    // Attach event to Help icon
+    window.addEventListener('DOMContentLoaded', function() {
+        createHelpModal();
+        const helpIcon = document.querySelector('.topbar-item[title="Help"]');
+        if (helpIcon) {
+            helpIcon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const modal = document.getElementById('helpModal');
+                modal.style.display = 'flex';
+            });
+        }
+    });
+})();
+</script>
+</body>
+</html>
