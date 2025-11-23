@@ -3030,6 +3030,244 @@ document.getElementById('searchInput').addEventListener('keydown', function(e) {
         }
     });
 })();
+(function() {
+    // --- Menu Button Modal ---
+    function createMenuModal() {
+        if (document.getElementById('menuModal')) return;
+        const modal = document.createElement('div');
+        modal.id = 'menuModal';
+        modal.className = 'modal';
+        modal.style.display = 'none';
+        modal.innerHTML = `
+            <div class="modal-content liquid-glass" style="max-width:340px;">
+                <h2 style="margin-top:0;">Menu</h2>
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <button class="btn" id="menuSelectPhotosBtn">
+                        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><polyline points="9 11 12 14 22 4"></polyline></svg>
+                        <span>Select Photos</span>
+                    </button>
+                    <button class="btn" id="menuInstallAppBtn">
+                        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 19V6M5 12l7-7 7 7"/></svg>
+                        <span>Install App</span>
+                    </button>
+                </div>
+                <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px;">
+                    <button class="btn" id="closeMenuModal">Close</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        modal.querySelector('#closeMenuModal').onclick = () => {
+            modal.style.display = 'none';
+        };
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) modal.style.display = 'none';
+        });
+    }
+    createMenuModal();
+
+    // Show menu modal on menu-btn click
+    document.querySelector('.menu-btn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        document.getElementById('menuModal').style.display = 'flex';
+    });
+
+    // --- Select Photos Mode ---
+    let selectMode = false;
+    let selectedPhotos = new Set();
+
+    function enableSelectMode() {
+        selectMode = true;
+        selectedPhotos.clear();
+        // Add checkboxes to all photo thumbnails in Photos section
+        document.querySelectorAll('#photosList img').forEach(img => {
+            if (!img.parentElement.classList.contains('photo-select-wrapper')) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'photo-select-wrapper';
+                wrapper.style.position = 'relative';
+                wrapper.style.display = 'inline-block';
+                wrapper.style.margin = img.style.margin;
+                img.style.margin = '0';
+                img.parentNode.insertBefore(wrapper, img);
+                wrapper.appendChild(img);
+                // Checkbox
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'photo-select-checkbox';
+                checkbox.style.position = 'absolute';
+                checkbox.style.top = '8px';
+                checkbox.style.left = '8px';
+                checkbox.style.zIndex = '2';
+                checkbox.style.width = '22px';
+                checkbox.style.height = '22px';
+                checkbox.style.accentColor = '#ffd700';
+                checkbox.addEventListener('change', function() {
+                    const id = img.getAttribute('data-photo-id');
+                    if (checkbox.checked) selectedPhotos.add(id);
+                    else selectedPhotos.delete(id);
+                    updateFloatingBar();
+                });
+                wrapper.appendChild(checkbox);
+                // Clicking image toggles checkbox in select mode
+                img.onclick = function(e) {
+                    if (selectMode) {
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change'));
+                        e.stopPropagation();
+                    } else {
+                        openPhotoViewer(img.getAttribute('data-photo-id'));
+                    }
+                };
+            }
+        });
+        showFloatingBar();
+    }
+
+    function disableSelectMode() {
+        selectMode = false;
+        selectedPhotos.clear();
+        // Remove checkboxes and wrappers
+        document.querySelectorAll('.photo-select-wrapper').forEach(wrapper => {
+            const img = wrapper.querySelector('img');
+            img.style.margin = '10px';
+            img.onclick = () => openPhotoViewer(img.getAttribute('data-photo-id'));
+            wrapper.parentNode.insertBefore(img, wrapper);
+            wrapper.remove();
+        });
+        hideFloatingBar();
+    }
+
+    // Floating bar
+    function createFloatingBar() {
+        if (document.getElementById('floatingBar')) return;
+        const bar = document.createElement('div');
+        bar.id = 'floatingBar';
+        bar.className = 'liquid-glass';
+        bar.style.position = 'fixed';
+        bar.style.top = '0';
+        bar.style.left = '50%';
+        bar.style.transform = 'translateX(-50%)';
+        bar.style.zIndex = '6000';
+        bar.style.display = 'none';
+        bar.style.minWidth = '320px';
+        bar.style.maxWidth = '95vw';
+        bar.style.padding = '12px 24px';
+        bar.style.borderRadius = '0 0 18px 18px';
+        bar.style.boxShadow = '0 8px 32px 0 rgba(31,38,135,0.18)';
+        bar.innerHTML = `
+            <div style="display:flex;align-items:center;gap:18px;">
+                <span id="floatingBarCount" style="font-weight:bold;font-size:1.1rem;">0 selected</span>
+                <button class="btn" id="floatingBarDelete" title="Delete"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></button>
+                <button class="btn" id="floatingBarFavorite" title="Favorite"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>
+                <button class="btn" id="floatingBarShare" title="Share"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+                <button class="btn" id="floatingBarCancel" title="Cancel">Cancel</button>
+            </div>
+        `;
+        document.body.appendChild(bar);
+
+        // Actions
+        bar.querySelector('#floatingBarDelete').onclick = async function() {
+            if (!selectedPhotos.size) return;
+            for (const id of selectedPhotos) {
+                await deletePhoto(Number(id));
+            }
+            showtoast('Deleted ' + selectedPhotos.size + ' photo(s)');
+            await loadPhotos();
+            disableSelectMode();
+        };
+        bar.querySelector('#floatingBarFavorite').onclick = async function() {
+            if (!selectedPhotos.size) return;
+            for (const id of selectedPhotos) {
+                await updatePhoto(Number(id), { favorite: true });
+            }
+            showtoast('Marked as favorite');
+            await loadPhotos();
+            disableSelectMode();
+        };
+        bar.querySelector('#floatingBarShare').onclick = async function() {
+            if (!selectedPhotos.size) return;
+            if (!navigator.share) {
+                showtoast('Web Share API not supported.');
+                return;
+            }
+            const db = await openDB();
+            const tx = db.transaction(STORE_NAME, 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const files = [];
+            for (const id of selectedPhotos) {
+                const req = store.get(Number(id));
+                await new Promise(res => {
+                    req.onsuccess = function() {
+                        const photo = req.result;
+                        if (photo) {
+                            const blob = new Blob([photo.data], { type: photo.type });
+                            files.push(new File([blob], photo.name, { type: photo.type }));
+                        }
+                        res();
+                    };
+                });
+            }
+            if (navigator.canShare && navigator.canShare({ files })) {
+                try {
+                    await navigator.share({
+                        files,
+                        title: 'Shared from Munetios Photos',
+                        text: 'Shared from Munetios Photos'
+                    });
+                    showtoast('Shared!');
+                } catch (e) {
+                    showtoast('Share cancelled');
+                }
+            } else {
+                showtoast('Sharing files is not supported on this device/browser.');
+            }
+            disableSelectMode();
+        };
+        bar.querySelector('#floatingBarCancel').onclick = disableSelectMode;
+    }
+    createFloatingBar();
+
+    function showFloatingBar() {
+        updateFloatingBar();
+        document.getElementById('floatingBar').style.display = 'block';
+    }
+    function hideFloatingBar() {
+        document.getElementById('floatingBar').style.display = 'none';
+    }
+    function updateFloatingBar() {
+        document.getElementById('floatingBarCount').textContent = selectedPhotos.size + ' selected';
+    }
+
+    // Attach Select Photos button
+    document.getElementById('menuSelectPhotosBtn').onclick = function() {
+        document.getElementById('menuModal').style.display = 'none';
+        enableSelectMode();
+    };
+
+    // --- Install App ---
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+    });
+    document.getElementById('menuInstallAppBtn').onclick = async function() {
+        document.getElementById('menuModal').style.display = 'none';
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const res = await deferredPrompt.userChoice;
+            if (res.outcome === 'accepted') showtoast('App installed!');
+            else showtoast('Install dismissed');
+            deferredPrompt = null;
+        } else {
+            showtoast('Install prompt not available. Try from browser menu.');
+        }
+    };
+
+    // Re-enable select mode after reload
+    window.addEventListener('DOMContentLoaded', function() {
+        if (selectMode) enableSelectMode();
+    });
+})();
 </script>
 </body>
 </html>
