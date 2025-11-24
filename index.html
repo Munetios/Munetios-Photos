@@ -2605,6 +2605,7 @@ document.getElementById('searchInput').addEventListener('keydown', function(e) {
                 <div style="margin-bottom:18px;">
                     <b>Theme:</b>
                     <div id="themeOptions" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;">
+                        <button class="btn" data-theme="system" style="background:linear-gradient(90deg,#fff 50%,#1d0a30 50%);color:#222;">System</button>
                         <button class="btn" data-theme="dark-purple" style="background:#1d0a30;">Dark Purple</button>
                         <button class="btn" data-theme="white" style="background:#fff;color:#222;">White</button>
                         <button class="btn" data-theme="dark-red" style="background:#3a0a0a;">Dark Red</button>
@@ -2649,6 +2650,13 @@ document.getElementById('searchInput').addEventListener('keydown', function(e) {
                     </div>
                 </div>
                 <div style="margin-bottom:18px;">
+                    <b>Reduce Transparency:</b>
+                    <label style="margin-left:10px;display:inline-flex;align-items:center;gap:6px;">
+                        <input type="checkbox" id="reduceTransparencyToggle" style="accent-color:#ffd700;">
+                        <span style="color:#aaa;font-size:0.95em;">Reduce glass blur effects</span>
+                    </label>
+                </div>
+                <div style="margin-bottom:18px;">
                     <b>Photo Quality:</b>
                     <select id="photoQualitySelect" class="btn" style="margin-left:10px;">
                         <option value="high">High</option>
@@ -2680,6 +2688,10 @@ document.getElementById('searchInput').addEventListener('keydown', function(e) {
 
         // Theme logic
         const themeMap = {
+            "system": { 
+                bg: window.matchMedia('(prefers-color-scheme: dark)').matches ? "#1d0a30" : "#fff", 
+                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? "#fff" : "#222" 
+            },
             "dark-purple": { bg: "#1d0a30", color: "#fff" },
             "white": { bg: "#fff", color: "#222" },
             "dark-red": { bg: "#3a0a0a", color: "#fff" },
@@ -2723,28 +2735,121 @@ document.getElementById('searchInput').addEventListener('keydown', function(e) {
             "silver": { bg: "#dddddd", color: "#222" }
         };
         function applyTheme(theme) {
-            const t = themeMap[theme] || themeMap["dark-purple"];
+            let t;
+            if (theme === "system") {
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    t = { bg: "#1d0a30", color: "#fff" };
+                } else {
+                    t = { bg: "#fff", color: "#222" };
+                }
+            } else {
+                t = themeMap[theme] || themeMap["dark-purple"];
+            }
             document.body.style.backgroundColor = t.bg;
             document.body.style.color = t.color;
             document.querySelector('meta[name="theme-color"]').setAttribute('content', t.bg);
             localStorage.setItem('munetios_theme', theme);
         }
         // Restore theme on load
-        const savedTheme = localStorage.getItem('munetios_theme') || "dark-purple";
+        const savedTheme = localStorage.getItem('munetios_theme') || "system";
         applyTheme(savedTheme);
+        // Listen for system color scheme changes if "system" theme is selected
+        if (savedTheme === "system") {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => applyTheme("system"));
+        }
         // Theme button events
         modal.querySelectorAll('#themeOptions .btn').forEach(btn => {
             btn.onclick = function() {
                 applyTheme(btn.getAttribute('data-theme'));
             };
         });
-
+        
+        // Reduce Transparency logic
+        const reduceTransparencyToggle = modal.querySelector('#reduceTransparencyToggle');
+        // Restore state from localStorage
+        reduceTransparencyToggle.checked = localStorage.getItem('munetios_reduce_transparency') === '1';
+        function applyReduceTransparency(on) {
+            if (on) {
+                // Remove glass blur and set solid background for readability
+                document.querySelectorAll('.liquid-glass').forEach(el => {
+                    el.style.backdropFilter = 'none';
+                    el.style.background = 'rgba(30,20,50,0.97)';
+                });
+                // Do NOT override .btn backgrounds, so theme colors remain visible
+            } else {
+                // Restore glass effect and original background
+                document.querySelectorAll('.liquid-glass').forEach(el => {
+                    el.style.backdropFilter = '';
+                    el.style.background = '';
+                });
+                // Do NOT override .btn backgrounds, so theme colors remain visible
+            }
+        }
+        // Apply on load
+        applyReduceTransparency(reduceTransparencyToggle.checked);
+        reduceTransparencyToggle.onchange = function() {
+            localStorage.setItem('munetios_reduce_transparency', reduceTransparencyToggle.checked ? '1' : '0');
+            applyReduceTransparency(reduceTransparencyToggle.checked);
+        };
         // Photo quality logic
         const photoQualitySelect = modal.querySelector('#photoQualitySelect');
-        photoQualitySelect.value = localStorage.getItem('munetios_photo_quality') || 'high';
-        photoQualitySelect.onchange = function() {
-            localStorage.setItem('munetios_photo_quality', photoQualitySelect.value);
-        };
+        if (photoQualitySelect) {
+            photoQualitySelect.value = localStorage.getItem('munetios_photo_quality') || 'high';
+            photoQualitySelect.onchange = function() {
+                localStorage.setItem('munetios_photo_quality', photoQualitySelect.value);
+            };
+        }
+
+        // Use photo quality setting when saving photos
+        async function savePhoto(file) {
+            let quality = localStorage.getItem('munetios_photo_quality') || 'high';
+            let processedFile = file;
+            if (quality === 'low' && file.type.startsWith('image/')) {
+                // Compress image to lower quality using canvas and resize to smaller dimensions
+                const img = document.createElement('img');
+                const url = URL.createObjectURL(file);
+                await new Promise((resolve, reject) => {
+                    img.onload = () => resolve();
+                    img.onerror = reject;
+                    img.src = url;
+                });
+                // Resize to smaller dimensions (e.g., max 800px width or height)
+                let maxDim = 800;
+                let scale = Math.min(maxDim / img.width, maxDim / img.height, 1);
+                let newWidth = Math.round(img.width * scale);
+                let newHeight = Math.round(img.height * scale);
+                const canvas = document.createElement('canvas');
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                // Use JPEG for better compression
+                await new Promise((resolve) => {
+                    canvas.toBlob(blob => {
+                        processedFile = new File([blob], file.name.replace(/\.\w+$/, '.jpg'), { type: 'image/jpeg' });
+                        URL.revokeObjectURL(url);
+                        resolve();
+                    }, 'image/jpeg', 0.4); // Lower quality for more blur
+                });
+            }
+            const arrayBuffer = await processedFile.arrayBuffer();
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, 'readwrite');
+                const store = tx.objectStore(STORE_NAME);
+                const photo = {
+                    name: processedFile.name,
+                    type: processedFile.type,
+                    data: new Uint8Array(arrayBuffer),
+                    date: new Date().toISOString(),
+                    favorite: false,
+                    albums: []
+                };
+                const req = store.add(photo);
+                req.onsuccess = () => resolve();
+                req.onerror = e => reject(e);
+            });
+        }
 
         // Export data
         modal.querySelector('#exportDataBtn').onclick = async function() {
