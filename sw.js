@@ -5,7 +5,8 @@ const FILES_TO_CACHE = [
     '/manifest.json',
     '/icon-192.png',
     '/icon-512.png',
-    '/image.png'
+    '/image.png',
+    'https://api.munetios.com/beautiful-css/beautiful.css',
 ];
 
 // Install event: cache files
@@ -52,4 +53,5 @@ self.addEventListener('fetch', event => {
                 return cachedResponse || fetchPromise;
             })
     );
+
 });
