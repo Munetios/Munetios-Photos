@@ -1590,7 +1590,7 @@ gap: 16px;
                 modal.querySelector('#shareGmailBtn').onclick = function() {
                     const subject = encodeURIComponent('Shared from Munetios Photos');
                     const body = encodeURIComponent('See attached photo from Munetios Photos.');
-                    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=&su=${subject}&body=${body}`, '_self');
+                    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=&su=${subject}&body=${body}`, '_blank');
                 };
                 // Facebook
                 modal.querySelector('#shareFacebookBtn').onclick = function() {
@@ -1606,7 +1606,7 @@ gap: 16px;
                 modal.querySelector('#shareBloggerBtn').onclick = function() {
                     const shareUrl = encodeURIComponent(window.location.href);
                     const title = encodeURIComponent('Shared from Munetios Photos');
-                    window.open(`https://www.blogger.com/blog-this.g?u=${shareUrl}&n=${title}`, '_self');
+                    window.open(`https://www.blogger.com/blog-this.g?u=${shareUrl}&n=${title}`, '_blank');
                 };
                 // Twitter
                 modal.querySelector('#shareTwitterBtn').onclick = function() {
