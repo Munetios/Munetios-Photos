@@ -318,7 +318,7 @@
         .sidebar {
           width: 60px;
         }
-        .sidebar-item span {
+        .sidebar-item span:not(.material-symbols-rounded) {
           display: none;
         }
         .sidebar-item {
@@ -586,11 +586,14 @@
           "GRAD" 0,
           "opsz" 24;
       }
+      icon {
+        font-family: "Material Symbols Rounded";
+      }
       .icon-20 {
-        font-size: 20px;
+        font-size: 20px !important;
       }
       .icon-22 {
-        font-size: 22px;
+        font-size: 22px !important;
       }
       .icon-24 {
         font-size: 24px;
@@ -687,15 +690,15 @@
     <aside class="sidebar liquid-glass">
       <nav class="sidebar-items">
         <div class="sidebar-item" data-page="photosContent" title="Photos">
-          <span class="material-symbols-rounded icon-20">photo_library</span>
+          <icon class="material-symbols-rounded icon-20">photo_library</icon>
           <span>Photos</span>
         </div>
         <div class="sidebar-item" data-page="videosContent" title="My Videos">
-          <span class="material-symbols-rounded icon-20">movie</span>
+          <icon class="material-symbols-rounded icon-20">movie</icon>
           <span>My Videos</span>
         </div>
         <div class="sidebar-item" data-page="albumsContent" title="Albums">
-          <span class="material-symbols-rounded icon-20">photo_album</span>
+          <icon class="material-symbols-rounded icon-20">photo_album</icon>
           <span>Albums</span>
         </div>
         <div
@@ -703,8 +706,8 @@
           data-page="screenshotsContent"
           title="Screenshots / Recordings"
         >
-          <span class="material-symbols-rounded icon-20"
-            >screenshot_monitor</span
+          <icon class="material-symbols-rounded icon-20"
+            >screenshot_monitor</icon
           >
           <span>Screenshots</span>
         </div>
@@ -713,11 +716,11 @@
           data-page="favoritesContent"
           title="Favorites"
         >
-          <span class="material-symbols-rounded icon-20">star</span>
+          <icon class="material-symbols-rounded icon-20">star</icon>
           <span>Favorites</span>
         </div>
         <div class="sidebar-item" data-page="trashContent" title="Trash">
-          <span class="material-symbols-rounded icon-20">delete</span>
+          <icon class="material-symbols-rounded icon-20">delete</icon>
           <span>Trash</span>
         </div>
       </nav>
