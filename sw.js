@@ -7,6 +7,14 @@ const FILES_TO_CACHE = [
     '/icon-512.png',
     '/image.png',
     'https://api.munetios.com/beautiful-css/beautiful.css',
+  "https://api.munetios.com/fonts/google-sans-flex/googlesansflex.ttf",
+  "https://api.munetios.com/fonts/material-symbols/MaterialSymbolsRounded-VariableFont_FILL\,GRAD\,opsz\,wght.ttf",
+  "https://api.munetios.com/fonts/inter/inter.ttf",
+  "https://api.munetios.com/fonts/open-sans/opensans.ttf",
+  "https://api.munetios.com/fonts/roboto/roboto.ttf",
+  "https://api.munetios.com/fonts/google-sans/googlesans.ttf",
+  "https://api.munetios.com/fonts/lexend/lexend.ttf",
+  "https://api.munetios.com/fonts/poppins/Poppins-Regular.ttf",
 ];
 
 // Install event: cache files
